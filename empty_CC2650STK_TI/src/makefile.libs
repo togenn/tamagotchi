@@ -1,6 +1,6 @@
 #
 # This file was generated based on the configuration script:
-#     C:\Users\Toni\Desktop\empty_CC2650STK_TI\empty_CC2650STK_TI\empty.cfg
+#     C:\Users\Toni\git\tamagotchi\empty_CC2650STK_TI\empty.cfg
 #
 # This makefile may be included in other makefiles that need to build
 # the libraries containing the compiled source files generated as
@@ -14,7 +14,7 @@
 #
 # The absolute path to the generated source directory (at the time the
 # sources were generated) is:
-#    C:\Users\Toni\Desktop\empty_CC2650STK_TI\empty_CC2650STK_TI\src
+#    C:\Users\Toni\git\tamagotchi\empty_CC2650STK_TI\src
 #
 GEN_SRC_DIR ?= ../src
 

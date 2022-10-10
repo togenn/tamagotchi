@@ -26,8 +26,8 @@
 Char sensorTaskStack[STACKSIZE];
 Char uartTaskStack[STACKSIZE];
 
-enum state { IDLE=1, READ_ACCEL_DATA };
-enum state programState = IDLE;
+enum state { WAITING=1, READ_ACCEL_DATA };
+enum state programState = WAITING;
 
 double ambientLight = -1000.0;
 
