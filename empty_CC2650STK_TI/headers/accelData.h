@@ -2,6 +2,8 @@
 #ifndef HEADERS_ACCELDATA_H_
 #define HEADERS_ACCELDATA_H_
 
+#include <xdc/std.h>
+
 #include "commands.h"
 
 struct data_point {
@@ -10,11 +12,9 @@ struct data_point {
     float z;
 };
 
-data_point data_values[3];
-
 void accelSensorTaskFxn(UArg arg0, UArg arg1);
 
-command recogniseCommand();
+command recogniseCommand(struct data_point* data);
 
 
 
