@@ -23,6 +23,9 @@
 
 #include "stateMachine.h"
 
+
+state programState = WAITING;
+
 /* Task */
 #define STACKSIZE 2048
 Char sensorTaskStack[STACKSIZE];

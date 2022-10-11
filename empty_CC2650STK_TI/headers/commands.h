@@ -2,12 +2,15 @@
 #ifndef HEADERS_COMMANDS_H_
 #define HEADERS_COMMANDS_H_
 
-enum command {
-    EAT = 1,
+ typedef enum command {
+    EMPTY = 0,
+    EAT,
     PET,
-    EXERCISE;
+    EXERCISE,
     ACTIVATE
-};
+} command;
+
+extern command commandToSend;
 
 
 #endif /* HEADERS_COMMANDS_H_ */
