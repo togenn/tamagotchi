@@ -503,21 +503,21 @@ void mpu9250_get_data(I2C_Handle *i2c, float *ax, float *ay, float *az, float *g
 	readByte( ACCEL_XOUT_H, 14, rawData);
 
 	// JTKJ: Convert the 8-bit values (the _h and _l registers) in the array rawData into 16-bit values
-	// int16_t nx = ...
-	// int16_t ny = ...
-	// int16_t nz = ...
-	// int16_t mx = ...
-	// int16_t my = ...
-	// int16_t mz = ...
+	int16_t nx = rawData[0] | (rawData[1] << 4);
+	int16_t ny = rawData[1];
+	int16_t nz = rawData[2];
+	int16_t mx = rawData[4];
+	int16_t my = rawData[5];
+	int16_t mz = rawData[6];
 	
 	// JTKJ: Convert the 16-bit register values into g 
 	//       Each nx, ny and nz below is represents the 16-bit values for each axis separately
-	// *ax = (float)nx*aRes - accelBias[0];
-	// *ay = (float)ny*aRes - accelBias[1];
-	// *az = (float)nz*aRes - accelBias[2];
+	*ax = (float)nx*aRes - accelBias[0];
+	*ay = (float)ny*aRes - accelBias[1];
+	*az = (float)nz*aRes - accelBias[2];
 
 	// JTKJ: Convert g values mx, my, mz into degrees per second
-	// *gx = (float)mx*gRes;
-	// *gy = (float)my*gRes;
-	// *gz = (float)mz*gRes;
+	*gx = (float)mx*gRes;
+	*gy = (float)my*gRes;
+	*gz = (float)mz*gRes;
 }

@@ -37,8 +37,7 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
     struct data_point data_values[3];
     while (1) {
 
-        if (programState == WAITING) {
-            programState = READ_ACCEL_DATA;
+        if (programState == READ_ACCEL_DATA) {
             float gx, gy, gz;
             mpu9250_get_data(&i2c, &data.x, &data.y, &data.z, &gx, &gy, &gz);
             data_values[index] = data;
