@@ -10,7 +10,5 @@
     ACTIVATE
 } command;
 
-extern command commandToSend;
-
 
 #endif /* HEADERS_COMMANDS_H_ */
