@@ -20,6 +20,7 @@
 #include "Board.h"
 #include "wireless/comm_lib.h"
 #include "sensors/opt3001.h"
+#include "buzzer.h"
 
 #include "stateMachine.h"
 
@@ -37,6 +38,15 @@ static PIN_Handle buttonHandle;
 static PIN_State buttonState;
 static PIN_Handle ledHandle;
 static PIN_State ledState;
+
+// Buzzer configuration
+static PIN_Handle hBuzzer;
+static PIN_State sBuzzer;
+PIN_Config cBuzzer[] = {
+  Board_BUZZER | PIN_GPIO_OUTPUT_EN | PIN_GPIO_LOW | PIN_PUSHPULL | PIN_DRVSTR_MAX,
+  PIN_TERMINATE
+};
+//
 
 PIN_Config buttonConfig[] = {
    Board_BUTTON0  | PIN_INPUT_EN | PIN_PULLUP | PIN_IRQ_NEGEDGE,
@@ -97,6 +107,18 @@ void sensorTaskFxn(UArg arg0, UArg arg1) {
     }
 }
 
+void buzzerTaskFxn(UArg arg0, UArg arg1) {
+
+    while (1) {
+      buzzerOpen(hBuzzer);
+      buzzerSetFrequency(2000);
+      Task_sleep(50000 / Clock_tickPeriod);
+      buzzerClose();
+
+      Task_sleep(950000 / Clock_tickPeriod);
+    }
+}
+
 int main(void) {
 
     // Task variables
@@ -122,7 +144,14 @@ int main(void) {
 
     if (PIN_registerIntCb(buttonHandle, &buttonFxn) != 0) {
           System_abort("Error registering button callback function");
-       }
+    }
+
+    // Buzzer
+    hBuzzer = PIN_open(&sBuzzer, cBuzzer);
+    if (hBuzzer == NULL) {
+      System_abort("Pin open failed!");
+    }
+
 
     /* Task */
     Task_Params_init(&sensorTaskParams);
