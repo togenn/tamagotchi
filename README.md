@@ -1,3 +1,3 @@
 # tamagotchi
 
-Käytä master branchia mainin sijaan
+älä Käytä master branchia mainin sijaan
