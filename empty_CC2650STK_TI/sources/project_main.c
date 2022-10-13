@@ -97,6 +97,18 @@ void sensorTaskFxn(UArg arg0, UArg arg1) {
     }
 }
 
+void buzzerTaskFxn(Uarg arg0, Uarg arg1) {
+
+    while (1) {
+      buzzerOpen(hBuzzer);
+      buzzerSetFrequency(2000);
+      Task_sleep(50000 / Clock_tickPeriod);
+      buzzerClose();
+
+      Task_sleep(950000 / Clock_tickPeriod);
+    }
+}
+
 int main(void) {
 
     // Task variables
@@ -122,7 +134,13 @@ int main(void) {
 
     if (PIN_registerIntCb(buttonHandle, &buttonFxn) != 0) {
           System_abort("Error registering button callback function");
-       }
+    }
+
+    // Buzzer
+    hBuzzer = PIN_open(&sBuzzer, cBuzzer);
+    if (hBuzzer == NULL) {
+      System_abort("Pin open failed!");
+    }
 
     /* Task */
     Task_Params_init(&sensorTaskParams);
