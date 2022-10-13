@@ -51,8 +51,9 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-.launches/
-.settings/
-src/
-targetConfigs/
-/*
+
+empty_CC2650STK_TI/.launches/
+empty_CC2650STK_TI/.settings/
+empty_CC2650STK_TI/src/
+empty_CC2650STK_TI/targetConfigs/
+empty_CC2650STK_TI/*
