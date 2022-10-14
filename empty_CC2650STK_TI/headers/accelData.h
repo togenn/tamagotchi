@@ -12,7 +12,6 @@ struct data_point {
     float z;
 };
 
-extern command commandToSend;
 
 void accelSensorTaskFxn(UArg arg0, UArg arg1);
 
