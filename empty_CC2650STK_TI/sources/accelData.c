@@ -54,7 +54,9 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
 
 command recogniseCommand(struct data_point* data) {
 
-    return EMPTY;
+    command cmd = EMPTY;
+
+    return cmd;
 }
 
 

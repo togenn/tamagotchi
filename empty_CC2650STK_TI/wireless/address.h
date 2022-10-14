@@ -14,4 +14,4 @@
 
 // JTKJ: Replace here the value 0x8000 with your network address (=the number in your box)
 //       E.g. box number is 123 -> set address below as 0x0123
-#define IEEE80154_MY_ADDR			0x8000
+#define IEEE80154_MY_ADDR			0x020

@@ -6,9 +6,12 @@
     EMPTY = 0,
     EAT,
     PET,
-    EXERCISE,
-    ACTIVATE
+    EXERCISE
 } command;
+
+const char* strings[] = {"", "EAT", "PET", "EXERCISE"};
+
+extern command commandToSend;
 
 
 #endif /* HEADERS_COMMANDS_H_ */
