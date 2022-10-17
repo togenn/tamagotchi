@@ -19,7 +19,7 @@
 
 command commandToSend = EMPTY;
 
-#define STACKSIZE 2048
+#define STACKSIZE 4096
 char taskStack[STACKSIZE];
 
 void initAccelSensorTask(void) {
