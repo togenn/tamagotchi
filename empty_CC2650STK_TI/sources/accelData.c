@@ -33,7 +33,7 @@ void initAccelSensorTask(void) {
 
     taskHandle = Task_create((Task_FuncPtr) accelSensorTaskFxn, &taskParams, NULL);
     if (taskHandle == NULL) {
-        System_abort("Acceleration sensor task creation failed");
+        System_abort("Acceleration sensor task creation failed\n");
     }
 }
 

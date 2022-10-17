@@ -24,6 +24,7 @@
 
 #include "stateMachine.h"
 #include "accelData.h"
+#include "communication.h"
 
 
 state programState = WAITING;
@@ -59,6 +60,7 @@ int main(void) {
     Board_initI2C();
 
     initAccelSensorTask();
+    initCommunicationTask();
     /* Sanity check */
     System_printf("Hello world!\n");
     System_flush();
