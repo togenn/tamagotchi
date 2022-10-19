@@ -13,7 +13,7 @@ typedef struct {
     unsigned long duration;
 } noteInfo;
 
-void playNote(unsigned int frequency, unsigned long duration);
+void playNote(uint16_t frequency, int duration);
 void playMelody(noteInfo melody[], int melodyLength);
 void initBuzzer();
 void closeBuzzer();

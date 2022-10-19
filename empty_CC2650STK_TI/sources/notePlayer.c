@@ -32,7 +32,7 @@ void closeBuzzer() {
     buzzerClose();
 }
 
-void playNote(unsigned int frequency, unsigned long duration) {
+void playNote(uint16_t frequency, int duration) {
     buzzerSetFrequency(frequency);
     DELAY_MS(duration);
 }
@@ -49,7 +49,7 @@ void buzzerTaskFxn(UArg arg0, UArg arg1) {
     int melodySize = sizeof(testMelody) / sizeof(testMelody[0]);
     while (1) {
       openBuzzer();
-      playMelody(testMelody, sizeof(testMelody));
+      playMelody(testMelody, melodySize);
       closeBuzzer();
 
       Task_sleep(950000 / Clock_tickPeriod);
