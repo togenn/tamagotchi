@@ -37,15 +37,19 @@ void playNote(unsigned int frequency, unsigned long duration) {
     DELAY_MS(duration);
 }
 
-void playMelody(noteInfo melody[]) {
-    int melodyLength = len(melody);
+void playMelody(noteInfo melody[], int melodyLength) {
+    int i;
+    for(i = 0; i < melodyLength; i++) {
+        playNote(melody[i].note, melody[i].duration);
+    }
 }
 
 void buzzerTaskFxn(UArg arg0, UArg arg1) {
-
+    noteInfo testMelody[] = {{NOTE_C4, 800}, {NOTE_G4, 800}};
+    int melodySize = sizeof(testMelody) / sizeof(testMelody[0]);
     while (1) {
       openBuzzer();
-      playNote(NOTE_C4, 800);
+      playMelody(testMelody, sizeof(testMelody));
       closeBuzzer();
 
       Task_sleep(950000 / Clock_tickPeriod);
