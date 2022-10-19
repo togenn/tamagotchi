@@ -6,33 +6,45 @@ SHELL = cmd.exe
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../sources/CC2650STK.c \
 ../sources/accelData.c \
+../sources/buzzer.c \
+../sources/communication.c \
+../sources/notePlayer.c \
 ../sources/project_main.c 
 
 C_DEPS += \
-./sources/CC2650STK.d \
 ./sources/accelData.d \
+./sources/buzzer.d \
+./sources/communication.d \
+./sources/notePlayer.d \
 ./sources/project_main.d 
 
 OBJS += \
-./sources/CC2650STK.obj \
 ./sources/accelData.obj \
+./sources/buzzer.obj \
+./sources/communication.obj \
+./sources/notePlayer.obj \
 ./sources/project_main.obj 
 
 OBJS__QUOTED += \
-"sources\CC2650STK.obj" \
 "sources\accelData.obj" \
+"sources\buzzer.obj" \
+"sources\communication.obj" \
+"sources\notePlayer.obj" \
 "sources\project_main.obj" 
 
 C_DEPS__QUOTED += \
-"sources\CC2650STK.d" \
 "sources\accelData.d" \
+"sources\buzzer.d" \
+"sources\communication.d" \
+"sources\notePlayer.d" \
 "sources\project_main.d" 
 
 C_SRCS__QUOTED += \
-"../sources/CC2650STK.c" \
 "../sources/accelData.c" \
+"../sources/buzzer.c" \
+"../sources/communication.c" \
+"../sources/notePlayer.c" \
 "../sources/project_main.c" 
 
 

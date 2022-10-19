@@ -20,7 +20,7 @@
 #include "Board.h"
 #include "wireless/comm_lib.h"
 #include "sensors/opt3001.h"
-#include "buzzer.h"
+#include "notePlayer.h"
 
 #include "stateMachine.h"
 #include "accelData.h"
@@ -32,26 +32,6 @@ state programState = WAITING;
 /* Task */
 #define STACKSIZE 2048
 
-// Buzzer configuration
-static PIN_Handle hBuzzer;
-static PIN_State sBuzzer;
-PIN_Config cBuzzer[] = {
-  Board_BUZZER | PIN_GPIO_OUTPUT_EN | PIN_GPIO_LOW | PIN_PUSHPULL | PIN_DRVSTR_MAX,
-  PIN_TERMINATE
-};
-
-
-void buzzerTaskFxn(UArg arg0, UArg arg1) {
-
-    while (1) {
-      buzzerOpen(hBuzzer);
-      buzzerSetFrequency(2000);
-      Task_sleep(50000 / Clock_tickPeriod);
-      buzzerClose();
-
-      Task_sleep(950000 / Clock_tickPeriod);
-    }
-}
 
 int main(void) {
 
@@ -61,6 +41,7 @@ int main(void) {
 
     initAccelSensorTask();
     initCommunicationTask();
+    initBuzzerTask();
     /* Sanity check */
     System_printf("Hello world!\n");
     System_flush();

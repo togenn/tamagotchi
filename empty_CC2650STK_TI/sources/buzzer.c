@@ -50,6 +50,7 @@
 // (until a Timer RTOS driver is in place)
 #include <ti/drivers/pin/PINCC26XX.h>
 #include <driverlib/timer.h>
+#include <notePitches.h>
 
 #include "buzzer.h"
 

@@ -10,13 +10,16 @@ GEN_OPTS__FLAG := --cmd_file="configPkg/compiler.opt"
 GEN_CMDS__FLAG := -l"configPkg/linker.cmd" 
 
 ORDERED_OBJS += \
+"./hardware_sources/CC2650STK.obj" \
 "./sensors/bmp280.obj" \
 "./sensors/hdc1000.obj" \
 "./sensors/mpu9250.obj" \
 "./sensors/opt3001.obj" \
 "./sensors/tmp007.obj" \
-"./sources/CC2650STK.obj" \
 "./sources/accelData.obj" \
+"./sources/buzzer.obj" \
+"./sources/communication.obj" \
+"./sources/notePlayer.obj" \
 "./sources/project_main.obj" \
 "./wireless/CWC_CC2650_154Drv.obj" \
 "./wireless/CWC_IntegrTest.obj" \
@@ -35,10 +38,12 @@ RMDIR := RMDIR /S/Q
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir_vars.mk
+-include hardware_sources/subdir_vars.mk
 -include sensors/subdir_vars.mk
 -include sources/subdir_vars.mk
 -include wireless/subdir_vars.mk
 -include subdir_rules.mk
+-include hardware_sources/subdir_rules.mk
 -include sensors/subdir_rules.mk
 -include sources/subdir_rules.mk
 -include wireless/subdir_rules.mk
@@ -172,8 +177,8 @@ empty_CC2650STK_TI.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "sensors\bmp280.obj" "sensors\hdc1000.obj" "sensors\mpu9250.obj" "sensors\opt3001.obj" "sensors\tmp007.obj" "sources\CC2650STK.obj" "sources\accelData.obj" "sources\project_main.obj" "wireless\CWC_CC2650_154Drv.obj" "wireless\CWC_IntegrTest.obj" "wireless\ERRORS.obj" "wireless\comm_lib.obj" 
-	-$(RM) "sensors\bmp280.d" "sensors\hdc1000.d" "sensors\mpu9250.d" "sensors\opt3001.d" "sensors\tmp007.d" "sources\CC2650STK.d" "sources\accelData.d" "sources\project_main.d" "wireless\CWC_CC2650_154Drv.d" "wireless\CWC_IntegrTest.d" "wireless\ERRORS.d" "wireless\comm_lib.d" 
+	-$(RM) "hardware_sources\CC2650STK.obj" "sensors\bmp280.obj" "sensors\hdc1000.obj" "sensors\mpu9250.obj" "sensors\opt3001.obj" "sensors\tmp007.obj" "sources\accelData.obj" "sources\buzzer.obj" "sources\communication.obj" "sources\notePlayer.obj" "sources\project_main.obj" "wireless\CWC_CC2650_154Drv.obj" "wireless\CWC_IntegrTest.obj" "wireless\ERRORS.obj" "wireless\comm_lib.obj" 
+	-$(RM) "hardware_sources\CC2650STK.d" "sensors\bmp280.d" "sensors\hdc1000.d" "sensors\mpu9250.d" "sensors\opt3001.d" "sensors\tmp007.d" "sources\accelData.d" "sources\buzzer.d" "sources\communication.d" "sources\notePlayer.d" "sources\project_main.d" "wireless\CWC_CC2650_154Drv.d" "wireless\CWC_IntegrTest.d" "wireless\ERRORS.d" "wireless\comm_lib.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
 	-@echo ' '
