@@ -9,8 +9,9 @@
 #include <xdc/runtime/System.h>
 
 #include "communication.h"
+#include "led.h"
 
-#define STACKSIZE 512
+#define STACKSIZE 1024
 char taskStack[STACKSIZE];
 
 void initCommunicationTask(void) {
@@ -36,7 +37,7 @@ void communicationTaskFxn(UArg arg0, UArg arg1) {
     char receivedPayload[80];
     uint16_t senderAddr;
     while (1) {
-
+        changeLedState();
         if (GetRXFlag()){
             memset(receivedPayload, 0 ,80);
             Receive6LoWPAN(&senderAddr, receivedPayload, 80);
