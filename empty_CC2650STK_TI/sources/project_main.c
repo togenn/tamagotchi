@@ -30,10 +30,6 @@
 
 state programState = WAITING;
 
-/* Task */
-#define STACKSIZE 2048
-
-
 int main(void) {
 
     Board_initGeneral();
@@ -42,9 +38,9 @@ int main(void) {
 
     initLed();
 
-    //initAccelSensorTask();
+    initAccelSensorTask();
     initCommunicationTask();
-    //initBuzzerTask();
+    initBuzzerTask();
     /* Sanity check */
     System_printf("Hello world!\n");
     System_flush();

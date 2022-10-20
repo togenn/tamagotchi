@@ -16,11 +16,12 @@
 #include "mpu9250.h"
 
 #include <stdio.h>
+#include "led.h"
 
 command commandToSend = EMPTY;
 
-#define STACKSIZE 4096
-char taskStack[STACKSIZE];
+#define STACKSIZE 1024
+static char taskStack[STACKSIZE];
 
 void initAccelSensorTask(void) {
     Task_Params taskParams;
@@ -90,15 +91,17 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
             I2C_close(i2c);
 
             data_values[index] = data;
+            /*
             char str[64];
             sprintf(str, "%.2f,%.2f,%.2f\n", data.x, data.y, data.z);
             System_printf(str);
+            */
             if (++index > 2) {
                 commandToSend = recogniseCommand(data_values);
                 index = 0;
             }
-            Task_sleep(100000 / Clock_tickPeriod);
         }
+        Task_sleep(100000 / Clock_tickPeriod);
     }
 }
 

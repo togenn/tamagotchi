@@ -17,8 +17,10 @@
 static PIN_Handle hBuzzer;
 static PIN_State sBuzzer;
 /* Task */
-#define STACKSIZE 2048
-Char taskStack[STACKSIZE];
+#define STACKSIZE 1024
+static char taskStack[STACKSIZE];
+
+
 
 PIN_Config cBuzzer[] = {
   Board_BUZZER | PIN_GPIO_OUTPUT_EN | PIN_GPIO_LOW | PIN_PUSHPULL | PIN_DRVSTR_MAX,

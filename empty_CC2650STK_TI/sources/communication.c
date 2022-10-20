@@ -11,8 +11,10 @@
 #include "communication.h"
 #include "led.h"
 
-#define STACKSIZE 1024
-char taskStack[STACKSIZE];
+#define STACKSIZE 2048
+static char taskStack[STACKSIZE];
+
+
 
 void initCommunicationTask(void) {
     Task_Params taskParams;
@@ -37,7 +39,7 @@ void communicationTaskFxn(UArg arg0, UArg arg1) {
     char receivedPayload[80];
     uint16_t senderAddr;
     while (1) {
-        changeLedState();
+
         if (GetRXFlag()){
             memset(receivedPayload, 0 ,80);
             Receive6LoWPAN(&senderAddr, receivedPayload, 80);
@@ -57,8 +59,6 @@ void sendCommand(command commandToSend) {
     uint16_t address = GetAddr6LoWPAN();
     char payload[11] = {'\0'};
     formatPayload(payload, commandToSend);
-    System_printf(payload);
-    System_flush();
     Send6LoWPAN(address, (uint8_t*) payload, strlen(payload));
 }
 
