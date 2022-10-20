@@ -9,14 +9,15 @@
 #define HEADERS_NOTEPLAYER_H_
 
 typedef struct {
-    unsigned int note;
-    unsigned long duration;
+    uint16_t note;
+    uint32_t duration;
 } noteInfo;
+
+void initBuzzerTask();
 
 void playNote(uint16_t frequency, int duration);
 void playMelody(noteInfo melody[], int melodyLength);
 void initBuzzer();
 void closeBuzzer();
 void buzzerTaskFxn(UArg arg0, UArg arg1);
-void initBuzzerTask();
 #endif /* HEADERS_NOTEPLAYER_H_ */

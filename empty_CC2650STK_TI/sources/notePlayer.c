@@ -16,7 +16,7 @@
 // Buzzer configuration
 static PIN_Handle hBuzzer;
 static PIN_State sBuzzer;
-/* Task */
+
 #define STACKSIZE 1024
 static char taskStack[STACKSIZE];
 
@@ -48,7 +48,7 @@ void playMelody(noteInfo melody[], int melodyLength) {
 
 void buzzerTaskFxn(UArg arg0, UArg arg1) {
     noteInfo testMelody[] = {{NOTE_C4, 800}, {NOTE_G4, 800}};
-    int melodySize = sizeof(testMelody) / sizeof(testMelody[0]);
+    size_t melodySize = sizeof(testMelody) / sizeof(testMelody[0]);
     while (1) {
       openBuzzer();
       playMelody(testMelody, melodySize);
@@ -72,6 +72,6 @@ void initBuzzerTask() {
      taskParams.stack = &taskStack;
      task = Task_create((Task_FuncPtr)buzzerTaskFxn, &taskParams, NULL);
      if (task == NULL) {
-       System_abort("Task create failed!");
+       System_abort("Buzzer task creation failed!");
      }
 }

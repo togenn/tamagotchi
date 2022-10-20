@@ -20,8 +20,8 @@
 #include "Board.h"
 #include "wireless/comm_lib.h"
 #include "sensors/opt3001.h"
-#include "notePlayer.h"
 
+#include "notePlayer.h"
 #include "stateMachine.h"
 #include "accelData.h"
 #include "communication.h"

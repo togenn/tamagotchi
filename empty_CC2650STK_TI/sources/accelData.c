@@ -16,7 +16,6 @@
 #include "mpu9250.h"
 
 #include <stdio.h>
-#include "led.h"
 
 command commandToSend = EMPTY;
 

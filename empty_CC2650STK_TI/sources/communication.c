@@ -9,11 +9,9 @@
 #include <xdc/runtime/System.h>
 
 #include "communication.h"
-#include "led.h"
 
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
-
 
 
 void initCommunicationTask(void) {
