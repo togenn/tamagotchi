@@ -54,6 +54,6 @@ dkms.conf
 .launches/
 .settings/
 src/
-!.gitignore
+.cproject
 Debug/*
 /Debug/
