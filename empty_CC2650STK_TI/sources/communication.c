@@ -15,9 +15,9 @@
 
 #define MAX_LEN 80
 #define OWN_ID 19
+
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
-
 
 void initCommunicationTask(void) {
     Task_Params taskParams;
@@ -30,7 +30,7 @@ void initCommunicationTask(void) {
 
     taskHandle = Task_create((Task_FuncPtr) communicationTaskFxn, &taskParams, NULL);
     if (taskHandle == NULL) {
-        System_abort("Communication sensor task creation failed\n");
+        System_abort("Communication task creation failed\n");
     }
 }
 

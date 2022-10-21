@@ -25,6 +25,7 @@
 #include "stateMachine.h"
 #include "accelData.h"
 #include "communication.h"
+#include "UARTCommunication.h"
 #include "led.h"
 #include "tamagotchiState.h"
 
@@ -40,9 +41,11 @@ int main(void) {
 
     initLed();
 
-    initAccelSensorTask();
-    initCommunicationTask();
-    initBuzzerTask();
+    //initAccelSensorTask();
+    //initCommunicationTask();
+    //initBuzzerTask();
+    initUARTCommTask();
+
     /* Sanity check */
     System_printf("Hello world!\n");
     System_flush();
