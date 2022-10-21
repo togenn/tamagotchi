@@ -26,9 +26,11 @@
 #include "accelData.h"
 #include "communication.h"
 #include "led.h"
+#include "tamagotchiState.h"
 
 
 state programState = WAITING;
+tamagotchiState tState = OK;
 
 int main(void) {
 

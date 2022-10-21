@@ -34,14 +34,13 @@ void closeBuzzer() {
     buzzerClose();
 }
 
-void playNote(uint16_t frequency, int duration) {
+void playNote(uint16_t frequency, uint32_t duration) {
     buzzerSetFrequency(frequency);
     DELAY_MS(duration);
 }
 
-void playMelody(noteInfo melody[], int melodyLength) {
-    int i;
-    for(i = 0; i < melodyLength; i++) {
+void playMelody(noteInfo* melody, size_t melodyLength) {
+    for(size_t i = 0; i < melodyLength; i++) {
         playNote(melody[i].note, melody[i].duration);
     }
 }

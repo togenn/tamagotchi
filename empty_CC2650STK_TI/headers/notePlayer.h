@@ -15,8 +15,8 @@ typedef struct {
 
 void initBuzzerTask();
 
-void playNote(uint16_t frequency, int duration);
-void playMelody(noteInfo melody[], int melodyLength);
+void playNote(uint16_t frequency, uint32_t duration);
+void playMelody(noteInfo* melody, size_t melodyLength);
 void initBuzzer();
 void closeBuzzer();
 void buzzerTaskFxn(UArg arg0, UArg arg1);

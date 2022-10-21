@@ -18,6 +18,7 @@ void initCommunicationTask(void);
 void communicationTaskFxn(UArg arg0, UArg arg1);
 void sendCommand(command commandToSend);
 void formatPayload(char* payload, command commandToSend);
+void handleReceivedMessage(char* receivedPayload);
 
 
 #endif /* HEADERS_COMMUNICATION_H_ */

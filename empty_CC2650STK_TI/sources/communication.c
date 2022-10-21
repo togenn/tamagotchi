@@ -8,8 +8,13 @@
 #include <ti/sysbios/knl/Clock.h>
 #include <xdc/runtime/System.h>
 
-#include "communication.h"
+#include <stdio.h>
 
+#include "communication.h"
+#include "tamagotchiState.h"
+
+#define MAX_LEN 80
+#define OWN_ID 19
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
 
@@ -34,13 +39,14 @@ void communicationTaskFxn(UArg arg0, UArg arg1) {
     if(StartReceive6LoWPAN() != true) {
        System_abort("Wireless receive start failed");
     }
-    char receivedPayload[80];
+    char receivedPayload[MAX_LEN];
     uint16_t senderAddr;
     while (1) {
 
         if (GetRXFlag()){
-            memset(receivedPayload, 0 ,80);
-            Receive6LoWPAN(&senderAddr, receivedPayload, 80);
+            memset(receivedPayload, 0 , MAX_LEN);
+            Receive6LoWPAN(&senderAddr, receivedPayload, MAX_LEN);
+            handleReceivedMessage(receivedPayload);
         }
 
         if (commandToSend) {
@@ -64,6 +70,19 @@ void formatPayload(char* payload, command commandToSend) {
     strcat(payload, getCommandAsStr(commandToSend));
     strcat(payload, ":");
     strcat(payload, "1");
+}
+
+void handleReceivedMessage(char* receivedPayload) {
+    char* id = strtok(receivedPayload, ",");
+    char* command = strtok(NULL, ",");
+    static char ownId[5];
+    sprintf(ownId, "%d", OWN_ID);
+
+    if (id && command) {
+        if (!strcmp(id, ownId) && !strcmp(command, "BEEP")) {
+            tState = CRITICAL;
+        }
+    }
 }
 
 
