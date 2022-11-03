@@ -11,6 +11,7 @@
 #include <ti/sysbios/knl/Task.h>
 #include <xdc/runtime/System.h>
 #include "notePitches.h"
+#include "tamagotchiState.h"
 #define DELAY_MS(i)      (Task_sleep(((i) * 1000) / Clock_tickPeriod))
 
 // Buzzer configuration
@@ -46,14 +47,15 @@ void playMelody(noteInfo* melody, size_t melodyLength) {
 }
 
 void buzzerTaskFxn(UArg arg0, UArg arg1) {
-    noteInfo testMelody[] = {{NOTE_C4, 800}, {NOTE_G4, 800}};
-    size_t melodySize = sizeof(testMelody) / sizeof(testMelody[0]);
     while (1) {
-      openBuzzer();
-      playMelody(testMelody, melodySize);
-      closeBuzzer();
-
-      Task_sleep(950000 / Clock_tickPeriod);
+        if (tState == CRITICAL) {
+            noteInfo currentMelody = {{NOTE_G3, 400}, {NOTE_C4, 400}};
+            size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
+            openBuzzer();
+            playMelody(currentMelody, melodySize);
+            closeBuzzer();
+        }
+      Task_sleep(100000 / Clock_tickPeriod);
     }
 }
 
