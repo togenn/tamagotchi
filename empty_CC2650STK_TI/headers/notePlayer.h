@@ -7,14 +7,11 @@
 
 #ifndef HEADERS_NOTEPLAYER_H_
 #define HEADERS_NOTEPLAYER_H_
-#include "notePitches.h"
 
 typedef struct {
     uint16_t note;
     uint32_t duration;
 } noteInfo;
-
-noteInfo alarmMelody[] = {{NOTE_G3, 800}, {NOTE_C4, 800}};
 
 
 void initBuzzerTask();

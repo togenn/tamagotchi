@@ -49,7 +49,7 @@ void playMelody(noteInfo* melody, size_t melodyLength) {
 void buzzerTaskFxn(UArg arg0, UArg arg1) {
     while (1) {
         if (tState == CRITICAL) {
-            noteInfo currentMelody = {{NOTE_G3, 400}, {NOTE_C4, 400}};
+            noteInfo currentMelody[] = {{NOTE_G3, 400}, {NOTE_C4, 400}};
             size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
             openBuzzer();
             playMelody(currentMelody, melodySize);
