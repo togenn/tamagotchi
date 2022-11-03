@@ -19,8 +19,10 @@
 
 command commandToSend = EMPTY;
 
-#define STACKSIZE 1024
+#define STACKSIZE 2048
 static char taskStack[STACKSIZE];
+
+#define DATA_POINTS 3
 
 void initAccelSensorTask(void) {
     Task_Params taskParams;
@@ -80,7 +82,7 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
 
     uint8_t index = 0;
     struct data_point data;
-    struct data_point data_values[3];
+    struct data_point data_values[DATA_POINTS];
     while (1) {
 
         if (programState == WAITING) {
@@ -90,17 +92,18 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
             I2C_close(i2c);
 
             data_values[index] = data;
-            /*
+
             char str[64];
             sprintf(str, "%.2f,%.2f,%.2f\n", data.x, data.y, data.z);
             System_printf(str);
-            */
+
             if (++index > 2) {
+                System_flush();
                 commandToSend = recogniseCommand(data_values);
                 index = 0;
             }
         }
-        Task_sleep(100000 / Clock_tickPeriod);
+        Task_sleep(1000000 / Clock_tickPeriod);
     }
 }
 

@@ -41,10 +41,10 @@ int main(void) {
 
     initLed();
 
-    //initAccelSensorTask();
+    initAccelSensorTask();
     //initCommunicationTask();
     //initBuzzerTask();
-    initUARTCommTask();
+    //initUARTCommTask();
 
     /* Sanity check */
     System_printf("Hello world!\n");

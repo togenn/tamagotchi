@@ -72,6 +72,7 @@ void UARTCommTaskFxn(UArg arg0, UArg arg1) {
             memset(receivedPayload, 0 , MAX_LEN);
         }
 
+        commandToSend = EAT;
         if (commandToSend) {
             sendCommandUART(&handle, commandToSend);
             commandToSend = EMPTY;
