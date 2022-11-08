@@ -2,7 +2,7 @@
  * accelData.c
  *
  *  Created on: 11 Oct 2022
- *      Author: Toni
+ *      Author: Toni, Tuukka
  */
 #include "accelData.h"
 #include "stateMachine.h"
@@ -109,7 +109,32 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
 
 command recogniseCommand(struct data_point* data) {
 
-    return EMPTY;
+    float xyzArr[3][3];
+    for (int i = 0; i < 3; ++i) {
+        xyzArr[0][i] = data->x;
+        xyzArr[1][i] = data->y;
+        xyzArr[2][i] = (abs(data->z)-1);
+    }
+
+    float rowsum[3];
+    for (int r = 0; r < 3; ++r) {
+        for (int c = 0; c < 3; ++c) {
+            rowsum[r] += xyzArr[r][c];
+        }
+    }
+
+    if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1) {
+        return PET;
+
+    } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1) {
+        return EXERCISE;
+
+    } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1) {
+        return EAT;
+
+    } else {
+        return EMPTY;
+    }
 }
 
 

@@ -1,5 +1,6 @@
 /* C Standard library */
 #include <stdio.h>
+#include <stdlib.h>
 
 /* XDCtools files */
 #include <xdc/std.h>
