@@ -3,11 +3,23 @@
 #define HEADERS_COMMANDS_H_
 
  typedef enum command {
-    EMPTY = 0,
+    EMPTY_COMMAND = 0,
     EAT,
     PET,
-    EXERCISE
+    EXERCISE,
 } command;
+
+typedef enum msg1 {
+    EMPTY_MSG1=0,
+    SUNNY,
+    DARK
+} msg1;
+
+typedef enum msg2 {
+    EMPTY_MSG2=0,
+    HOT,
+    COLD
+} msg2;
 
 static inline const char* getCommandAsStr(command cmd) {
     static const char* commandStrings[] = {"", "EAT", "PET", "EXERCISE"};
@@ -15,7 +27,21 @@ static inline const char* getCommandAsStr(command cmd) {
     return commandStrings[cmd];
 }
 
+static inline const char* getMsg1AsStr(command cmd) {
+    static const char* msg1Strings[] = {"", "SUNNY", "DARK"};
+
+    return msg1Strings[cmd];
+}
+
+static inline const char* getMsg2AsStr(command cmd) {
+    static const char* msg2Strings[] = {"", "HOT", "COLD"};
+
+    return msg2Strings[cmd];
+}
+
 
 extern command commandToSend;
+extern msg1 msg1ToSend;
+extern msg2 msg2ToSend;
 
 #endif /* HEADERS_COMMANDS_H_ */

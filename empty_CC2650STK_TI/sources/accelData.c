@@ -17,7 +17,6 @@
 
 #include <stdio.h>
 
-command commandToSend = EMPTY;
 
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
@@ -132,7 +131,7 @@ command recogniseCommand(struct data_point* data) {
         return EAT;
 
     } else {
-        return EMPTY;
+        return EMPTY_COMMAND;
     }
 }
 

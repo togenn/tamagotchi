@@ -75,7 +75,7 @@ void UARTCommTaskFxn(UArg arg0, UArg arg1) {
         commandToSend = EAT;
         if (commandToSend) {
             sendCommandUART(&handle, commandToSend);
-            commandToSend = EMPTY;
+            commandToSend = EMPTY_COMMAND;
         }
         Task_sleep(1000000 / Clock_tickPeriod);
     }
