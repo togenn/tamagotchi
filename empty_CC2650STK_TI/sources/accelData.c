@@ -87,14 +87,13 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
 
         if (programState == WAITING) {
             i2c = I2C_open(Board_I2C, &i2cParams);
-            float gx, gy, gz;
-            mpu9250_get_data(&i2c, &data.x, &data.y, &data.z, &gx, &gy, &gz);
+            mpu9250_get_data(&i2c, &data.ax, &data.ay, &data.az, &data.rx, &data.ry, &data.rz);
             I2C_close(i2c);
 
             data_values[index] = data;
 
             char str[64];
-            sprintf(str, "%.2f,%.2f,%.2f\n", data.x, data.y, data.z);
+            sprintf(str, "%.2f,%.2f,%.2f\n", data.rx, data.ry, data.rz);
             System_printf(str);
 
             if (++index > 2) {
@@ -111,9 +110,9 @@ command recogniseCommand(struct data_point* data) {
 
     float xyzArr[3][3];
     for (int i = 0; i < 3; ++i) {
-        xyzArr[0][i] = data->x;
-        xyzArr[1][i] = data->y;
-        xyzArr[2][i] = (abs(data->z)-1);
+        xyzArr[0][i] = data->ax;
+        xyzArr[1][i] = data->ay;
+        xyzArr[2][i] = (abs(data->az)-1);
     }
 
     float rowsum[3];

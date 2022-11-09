@@ -8,9 +8,12 @@
 #include "commands.h"
 
 struct data_point {
-    float x;
-    float y;
-    float z;
+    float ax;
+    float ay;
+    float az;
+    float rx;
+    float ry;
+    float rz;
 };
 
 void initAccelSensorTask(void);
