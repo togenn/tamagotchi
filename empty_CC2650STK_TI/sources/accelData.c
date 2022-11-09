@@ -107,29 +107,56 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
 
 command recogniseCommand(struct data_point* data) {
 
-    float xyzArr[3][3];
+    // Gathering 3 samples from each axis of the accelerometer
+    // and normalizing the z-axis (orientation does not matter)
+    float xyzAccArr[3][3];
     for (int i = 0; i < 3; ++i) {
-        xyzArr[0][i] = data->ax;
-        xyzArr[1][i] = data->ay;
-        xyzArr[2][i] = (abs(data->az)-1);
+        xyzAccArr[0][i] = data->ax;
+        xyzAccArr[1][i] = data->ay;
+        xyzAccArr[2][i] = (abs(data->az)-1);
     }
 
+    // Gathering 3 samples from each axis of the gyroscope,
+    // and taking the absolute values from each sample
+   float xyzGyroArr[3][3];
+   for (int j = 0; j < 3; ++j) {
+       xyzGyroArr[0][j] = abs(data->rx);
+       xyzGyroArr[1][j] = abs(data->ry);
+       xyzGyroArr[2][j] = abs(data->rz);
+   }
+
+    // Summing the accelerometer values together for comparison
     float rowsum[3];
-    for (int r = 0; r < 3; ++r) {
-        for (int c = 0; c < 3; ++c) {
-            rowsum[r] += xyzArr[r][c];
+    for (int rA = 0; rA < 3; ++rA) {
+        for (int cA = 0; cA < 3; ++cA) {
+            rowsum[rA] += xyzAccArr[rA][cA];
         }
     }
 
-    if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1) {
+    // Limit for gyro rotation
+    float const gyroL = 30;
+
+    // Array for each gyro axis, to check if there was rotation over the previous limit
+    int rotArr[3];
+
+    // Checking the rotations
+    for (int rG = 0; rG < 3; ++rG) {
+        for (int rC = 0; rC < 3; ++rC) {
+            if (xyzGyroArr[rG][rC] > gyroL) {
+                rotArr[rG] = 0;
+                break;
+            } else {
+                rotArr[rG] = 1;
+            }
+        }
+    }
+    // Conditions for the commands
+    if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1 && rotArr[1] && rotArr[2]) {
         return PET;
-
-    } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1) {
+    } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1 && rotArr[0] && rotArr[2]) {
         return EXERCISE;
-
-    } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1) {
+    } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1 && rotArr[0] && rotArr[1]) {
         return EAT;
-
     } else {
         return EMPTY_COMMAND;
     }
