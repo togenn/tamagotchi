@@ -82,9 +82,16 @@ void UARTCommTaskFxn(UArg arg0, UArg arg1) {
 
 }
 
-void sendCommandUART(UART_Handle* handle, command commandToSend) {
-    char payload[11] = {'\0'};
+void formatUARTPayload(char* payload, command commandToSend) {
+    char idStr[7];
+    sprintf(idStr, "id:%d,", OWN_ID);
+    strcat(payload, idStr);
     formatPayload(payload, commandToSend);
+}
+
+void sendCommandUART(UART_Handle* handle, command commandToSend) {
+    char payload[80] = {'\0'};
+    formatUARTPayload(payload, commandToSend);
     UART_write(*handle, payload, 11);
 }
 

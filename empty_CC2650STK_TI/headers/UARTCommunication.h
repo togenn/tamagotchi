@@ -18,6 +18,7 @@ void initUARTCommTask(void);
 void initUART(UART_Handle* handle);
 void UARTCommTaskFxn(UArg arg0, UArg arg1);
 void sendCommandUART(UART_Handle* handle, command commandToSend);
+void formatUARTPayload(char* payload, command commandToSend);
 
 
 #endif /* HEADERS_UARTCOMMUNICATION_H_ */

@@ -45,7 +45,7 @@ int main(void) {
     initAccelSensorTask();
     //initCommunicationTask();
     //initBuzzerTask();
-    //initUARTCommTask();
+    initUARTCommTask();
 
     /* Sanity check */
     System_printf("Hello world!\n");
