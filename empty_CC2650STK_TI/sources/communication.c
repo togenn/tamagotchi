@@ -12,6 +12,8 @@
 
 #include "communication.h"
 #include "tamagotchiState.h"
+#include "stateMachine.h"
+#include "led.h"
 
 #define MAX_LEN 80
 #define OWN_ID 19
@@ -42,28 +44,38 @@ void communicationTaskFxn(UArg arg0, UArg arg1) {
     char receivedPayload[MAX_LEN];
     uint16_t senderAddr;
     while (1) {
+        if (programState == COMMUNICATION) {
+            changeLedState(led2Handle);
+            if (GetRXFlag()){
+                memset(receivedPayload, 0 , MAX_LEN);
+                Receive6LoWPAN(&senderAddr, receivedPayload, MAX_LEN);
+                handleReceivedMessage(receivedPayload);
+            }
 
-        if (GetRXFlag()){
-            memset(receivedPayload, 0 , MAX_LEN);
-            Receive6LoWPAN(&senderAddr, receivedPayload, MAX_LEN);
-            handleReceivedMessage(receivedPayload);
-        }
-
-        if (commandToSend) {
-            sendCommand(commandToSend);
+            sendCommands();
             StartReceive6LoWPAN();
-            commandToSend = EMPTY_COMMAND;
+            memset(commandsToSend, EMPTY_COMMAND, sizeof(commandsToSend));
+            programState = WAITING;
         }
         Task_sleep(1000000 / Clock_tickPeriod);
     }
 
 }
 
-void sendCommand(command commandToSend) {
+void sendCommands() {
     uint16_t address = GetAddr6LoWPAN();
-    char payload[11] = {'\0'};
-    formatPayload(payload, commandToSend);
-    Send6LoWPAN(address, (uint8_t*) payload, strlen(payload));
+    char payload[MAX_LEN];
+
+    for (size_t i = 0; i < COMM_INTERVAL; ++i) {
+        if (commandsToSend[i] == EMPTY_COMMAND) {
+            continue;
+        }
+        memset(payload, 0, MAX_LEN);
+        formatPayload(payload, commandsToSend[i]);
+        System_printf(payload);
+        System_flush();
+        Send6LoWPAN(address, (uint8_t*) payload, strlen(payload));
+    }
 }
 
 void formatPayload(char* payload, command commandToSend) {

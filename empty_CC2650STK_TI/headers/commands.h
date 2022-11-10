@@ -2,6 +2,8 @@
 #ifndef HEADERS_COMMANDS_H_
 #define HEADERS_COMMANDS_H_
 
+#include "stateMachine.h"
+
  typedef enum command {
     EMPTY_COMMAND = 0,
     EAT,
@@ -40,7 +42,7 @@ static inline const char* getMsg2AsStr(command cmd) {
 }
 
 
-extern command commandToSend;
+extern command commandsToSend[COMM_INTERVAL];
 extern msg1 msg1ToSend;
 extern msg2 msg2ToSend;
 

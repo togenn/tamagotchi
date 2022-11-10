@@ -34,24 +34,43 @@
 state programState = WAITING;
 tamagotchiState tState = OK;
 
+
+Void clkFxn(UArg arg0) {
+    if (programState == WAITING) {
+        programState = READ_ACCEL_DATA;
+    }
+}
+
+static void initProgram() {
+    initLeds();
+
+    initAccelSensorTask();
+    initCommunicationTask();
+    //initBuzzerTask();
+    //initUARTCommTask();
+
+   Clock_Handle clkHandle;
+   Clock_Params clkParams;
+
+   Clock_Params_init(&clkParams);
+   uint32_t period = 100000 / Clock_tickPeriod;
+   clkParams.period = period;
+   clkParams.startFlag = TRUE;
+
+   clkHandle = Clock_create((Clock_FuncPtr)clkFxn, period, &clkParams, NULL);
+   if (clkHandle == NULL) {
+      System_abort("Clock create failed");
+   }
+}
+
 int main(void) {
 
     Board_initGeneral();
 
     Board_initI2C();
 
-    initLed();
+    initProgram();
 
-    initAccelSensorTask();
-    //initCommunicationTask();
-    //initBuzzerTask();
-    initUARTCommTask();
-
-    /* Sanity check */
-    System_printf("Hello world!\n");
-    System_flush();
-
-    /* Start BIOS */
     BIOS_start();
 
     return (0);

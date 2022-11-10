@@ -6,6 +6,7 @@
  */
 #include "accelData.h"
 #include "stateMachine.h"
+#include "led.h"
 
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Clock.h>
@@ -79,33 +80,45 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
     I2C_Params i2cParams;
     initAccelSensor(&i2c, &i2cParams);
 
-    uint8_t index = 0;
+    uint8_t dataCollected = 0;
+    uint8_t commandsAnalyzed = 0;
     struct data_point data;
     struct data_point data_values[DATA_POINTS];
     while (1) {
 
-        if (programState == WAITING) {
+        if (programState == READ_ACCEL_DATA) {
+            changeLedState(led1Handle);
             i2c = I2C_open(Board_I2C, &i2cParams);
             mpu9250_get_data(&i2c, &data.ax, &data.ay, &data.az, &data.rx, &data.ry, &data.rz);
             I2C_close(i2c);
 
-            data_values[index] = data;
-
+            data_values[dataCollected] = data;
+            /*
             char str[64];
             sprintf(str, "%.2f,%.2f,%.2f\n", data.rx, data.ry, data.rz);
             System_printf(str);
+            */
 
-            if (++index > 2) {
-                System_flush();
-                commandToSend = recogniseCommand(data_values);
-                index = 0;
+            if (++dataCollected == DATA_POINTS) {
+                //System_flush();
+                recogniseCommand(data_values, commandsAnalyzed);
+                dataCollected = 0;
+
+                ++commandsAnalyzed;
+            }
+
+            if (commandsAnalyzed == COMM_INTERVAL) {
+                programState = COMMUNICATION;
+                commandsAnalyzed = 0;
+            } else {
+                programState = WAITING;
             }
         }
-        Task_sleep(1000000 / Clock_tickPeriod);
+        Task_sleep(90000 / Clock_tickPeriod);
     }
 }
 
-command recogniseCommand(struct data_point* data) {
+void recogniseCommand(struct data_point* data, uint8_t commandsAnalyzed) {
 
     // Gathering 3 samples from each axis of the accelerometer
     // and normalizing the z-axis (orientation does not matter)
@@ -143,7 +156,7 @@ command recogniseCommand(struct data_point* data) {
     for (int rG = 0; rG < 3; ++rG) {
         for (int rC = 0; rC < 3; ++rC) {
             if (xyzGyroArr[rG][rC] > gyroL) {
-                rotArr[rG] = 0;
+                rotArr[rG] = 1;
                 break;
             } else {
                 rotArr[rG] = 1;
@@ -151,15 +164,16 @@ command recogniseCommand(struct data_point* data) {
         }
     }
     // Conditions for the commands
+    command commandToSend = EMPTY_COMMAND;
     if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1 && rotArr[1] && rotArr[2]) {
-        return PET;
+        commandToSend = PET;
     } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1 && rotArr[0] && rotArr[2]) {
-        return EXERCISE;
+        commandToSend = EXERCISE;
     } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1 && rotArr[0] && rotArr[1]) {
-        return EAT;
-    } else {
-        return EMPTY_COMMAND;
+        commandToSend = EAT;
     }
+
+    commandsToSend[commandsAnalyzed] = commandToSend;
 }
 
 

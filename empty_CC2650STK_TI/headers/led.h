@@ -8,7 +8,17 @@
 #ifndef HEADERS_LED_H_
 #define HEADERS_LED_H_
 
-void initLed(void);
-void changeLedState(void);
+#include <ti/drivers/pin/PINCC26xx.h>
+#include <ti/drivers/PIN.h>
+
+extern PIN_Handle led1Handle;
+extern PIN_State led1State;
+
+extern PIN_Handle led2Handle;
+extern PIN_State led2State;
+
+void initLeds(void);
+void changeLedState(PIN_Handle ledHandle);
+
 
 #endif /* HEADERS_LED_H_ */

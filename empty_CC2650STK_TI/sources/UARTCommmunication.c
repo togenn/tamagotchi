@@ -16,6 +16,7 @@
 #include "communication.h"
 #include "tamagotchiState.h"
 
+
 #define MAX_LEN 80
 #define OWN_ID 19
 
@@ -72,11 +73,6 @@ void UARTCommTaskFxn(UArg arg0, UArg arg1) {
             memset(receivedPayload, 0 , MAX_LEN);
         }
 
-        commandToSend = EAT;
-        if (commandToSend) {
-            sendCommandUART(&handle, commandToSend);
-            commandToSend = EMPTY_COMMAND;
-        }
         Task_sleep(1000000 / Clock_tickPeriod);
     }
 

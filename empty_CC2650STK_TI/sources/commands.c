@@ -6,7 +6,7 @@
  */
 #include "commands.h"
 
-command commandToSend = EMPTY_COMMAND;
+command commandsToSend[COMM_INTERVAL] = {};
 msg1 msg1ToSend = EMPTY_MSG1;
 msg2 msg2ToSend = EMPTY_MSG2;
 
