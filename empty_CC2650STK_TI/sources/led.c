@@ -2,7 +2,7 @@
  * led.c
  *
  *  Created on: 20 Oct 2022
- *      Author: peral
+ *      Author: peral, samuli
  */
 #include "led.h"
 #include "Board.h"
@@ -36,4 +36,9 @@ void changeLedState(PIN_Handle ledHandle) {
     uint_t pinValue = PIN_getOutputValue(ledPin);
     pinValue = !pinValue;
     PIN_setOutputValue(ledHandle, ledPin, pinValue);
+}
+
+uint_t getLedState(PIN_Handle ledHandle) {
+    uint32_t ledPin = ledHandle == led1Handle ? LED1_PIN : LED2_PIN;
+    return PIN_getOutputValue(ledPin);
 }

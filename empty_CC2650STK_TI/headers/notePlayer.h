@@ -20,5 +20,5 @@ void playNote(uint16_t frequency, uint32_t duration);
 void playMelody(noteInfo* melody, size_t melodyLength);
 void initBuzzer();
 void closeBuzzer();
-void buzzerTaskFxn(UArg arg0, UArg arg1);
+void openBuzzer(PIN_Handle);
 #endif /* HEADERS_NOTEPLAYER_H_ */

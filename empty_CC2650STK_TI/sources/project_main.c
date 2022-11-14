@@ -29,7 +29,7 @@
 #include "UARTCommunication.h"
 #include "led.h"
 #include "tamagotchiState.h"
-
+#include "update_ui.h"
 
 state programState = WAITING;
 tamagotchiState tState = OK;
@@ -47,6 +47,7 @@ static void initProgram() {
     //initAccelSensorTask();
     //initCommunicationTask();
     //initBuzzerTask();
+    initUpdateUITask();
     initUARTCommTask();
 
    Clock_Handle clkHandle;

@@ -2,7 +2,7 @@
  * led.h
  *
  *  Created on: 20 Oct 2022
- *      Author: peral
+ *      Author: peral, samuli
  */
 
 #ifndef HEADERS_LED_H_
@@ -17,6 +17,8 @@ extern PIN_State led1State;
 extern PIN_Handle led2Handle;
 extern PIN_State led2State;
 
+
+uint_t getLedState(PIN_Handle ledHandle);
 void initLeds(void);
 void changeLedState(PIN_Handle ledHandle);
 
