@@ -66,8 +66,8 @@ void updateUIFxn(UArg arg0, UArg arg1) {
             bool commandRecognized = checkForCommand();
             doBuzzerTask(commandRecognized);
             doLedTask(commandRecognized);
+            programState = COMMUNICATION;
         }
-        programState = COMMUNICATION;
         Task_sleep(100000 / Clock_tickPeriod);
     }
 }
