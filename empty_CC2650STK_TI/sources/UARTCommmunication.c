@@ -18,7 +18,7 @@
 
 
 #define MAX_LEN 80
-#define OWN_ID 19
+#define OWN_ID 2019
 
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
@@ -73,22 +73,25 @@ void UARTCommTaskFxn(UArg arg0, UArg arg1) {
             memset(receivedPayload, 0 , MAX_LEN);
         }
 
+        sendCommandUART(&handle, EAT);
+
         Task_sleep(1000000 / Clock_tickPeriod);
     }
 
 }
 
 void formatUARTPayload(char* payload, command commandToSend) {
-    char idStr[7];
+    char idStr[9];
     sprintf(idStr, "id:%d,", OWN_ID);
     strcat(payload, idStr);
     formatPayload(payload, commandToSend);
 }
 
 void sendCommandUART(UART_Handle* handle, command commandToSend) {
-    char payload[80] = {'\0'};
+    static char payload[MAX_LEN];
+    memset(payload, '\0', MAX_LEN);
     formatUARTPayload(payload, commandToSend);
-    UART_write(*handle, payload, 11);
+    UART_write(*handle, payload, MAX_LEN);
 }
 
 

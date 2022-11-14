@@ -44,10 +44,10 @@ Void clkFxn(UArg arg0) {
 static void initProgram() {
     initLeds();
 
-    initAccelSensorTask();
-    initCommunicationTask();
+    //initAccelSensorTask();
+    //initCommunicationTask();
     //initBuzzerTask();
-    //initUARTCommTask();
+    initUARTCommTask();
 
    Clock_Handle clkHandle;
    Clock_Params clkParams;
