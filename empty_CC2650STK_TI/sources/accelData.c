@@ -22,7 +22,7 @@
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
 
-#define DATA_POINTS 3
+#define DATA_POINTS COMM_AMOUNT + 2
 
 void initAccelSensorTask(void) {
     Task_Params taskParams;
@@ -101,79 +101,77 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
 
             if (++dataCollected == DATA_POINTS) {
                 //System_flush();
-                recogniseCommand(data_values, commandsAnalyzed);
+                recogniseCommand(data_values);
                 dataCollected = 0;
 
                 ++commandsAnalyzed;
-            }
-
-            if (commandsAnalyzed == COMM_INTERVAL) {
-                programState = COMMUNICATION;
-                commandsAnalyzed = 0;
-            } else {
-                programState = WAITING;
             }
         }
         Task_sleep(90000 / Clock_tickPeriod);
     }
 }
 
-void recogniseCommand(struct data_point* data, uint8_t commandsAnalyzed) {
+void recogniseCommand(struct data_point* data) {
 
-    // Gathering 3 samples from each axis of the accelerometer
+    // Gathering samples from each axis of the accelerometer
     // and normalizing the z-axis (orientation does not matter)
-    float xyzAccArr[3][3];
-    for (int i = 0; i < 3; ++i) {
+    float xyzAccArr[3][DATA_POINTS];
+    for (int i = 0; i < DATA_POINTS; ++i) {
         xyzAccArr[0][i] = data->ax;
         xyzAccArr[1][i] = data->ay;
         xyzAccArr[2][i] = (abs(data->az)-1);
     }
 
-    // Gathering 3 samples from each axis of the gyroscope,
-    // and taking the absolute values from each sample
-   float xyzGyroArr[3][3];
-   for (int j = 0; j < 3; ++j) {
+   // Gathering samples from each axis of the gyroscope,
+   // and taking the absolute values from each sample
+   float xyzGyroArr[3][DATA_POINTS];
+   for (int j = 0; j < (DATA_POINTS + 1); ++j) {
        xyzGyroArr[0][j] = abs(data->rx);
        xyzGyroArr[1][j] = abs(data->ry);
        xyzGyroArr[2][j] = abs(data->rz);
    }
 
-    // Summing the accelerometer values together for comparison
-    float rowsum[3];
-    for (int rA = 0; rA < 3; ++rA) {
-        for (int cA = 0; cA < 3; ++cA) {
-            rowsum[rA] += xyzAccArr[rA][cA];
-        }
-    }
+   // Sweeping through the 5 data points, three at a time
+   for (int k = 0; k < COMM_AMOUNT; ++k) {
 
-    // Limit for gyro rotation
-    float const gyroL = 30;
-
-    // Array for each gyro axis, to check if there was rotation over the previous limit
-    int rotArr[3];
-
-    // Checking the rotations
-    for (int rG = 0; rG < 3; ++rG) {
-        for (int rC = 0; rC < 3; ++rC) {
-            if (xyzGyroArr[rG][rC] > gyroL) {
-                rotArr[rG] = 1;
-                break;
-            } else {
-                rotArr[rG] = 1;
+        // Summing the accelerometer values together for comparison
+        float rowsum[3];
+        for (int rA = 0; rA < 3; ++rA) {
+            for (int cA = k; cA < (COMM_AMOUNT + k); ++cA) {
+                rowsum[rA] += xyzAccArr[rA][cA];
             }
         }
-    }
-    // Conditions for the commands
-    command commandToSend = EMPTY_COMMAND;
-    if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1 && rotArr[1] && rotArr[2]) {
-        commandToSend = PET;
-    } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1 && rotArr[0] && rotArr[2]) {
-        commandToSend = EXERCISE;
-    } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1 && rotArr[0] && rotArr[1]) {
-        commandToSend = EAT;
-    }
 
-    commandsToSend[commandsAnalyzed] = commandToSend;
+        // Limit for gyro rotation
+        float const gyroL = 90;
+
+        // Array for each gyro axis, to check if there was rotation over the previous limit
+        int rotArr[3];
+
+        // Checking the rotations
+        for (int rG = 0; rG < 3; ++rG) {
+            for (int cG = k; cG < (COMM_AMOUNT + k); ++cG) {
+                if (xyzGyroArr[rG][cG] > gyroL) {
+                    rotArr[rG] = 0;
+                    break;
+                } else {
+                    rotArr[rG] = 1;
+                }
+            }
+        }
+
+        // Conditions for the commands
+        command commandToSend = EMPTY_COMMAND;
+        if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1 && rotArr[1] && rotArr[2]) {
+            commandToSend = PET;
+        } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1 && rotArr[0] && rotArr[2]) {
+            commandToSend = EXERCISE;
+        } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1 && rotArr[0] && rotArr[1]) {
+            commandToSend = EAT;
+        }
+
+        commandsToSend[k] = commandToSend;
+    }
 }
 
 

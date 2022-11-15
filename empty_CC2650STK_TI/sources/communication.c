@@ -66,7 +66,7 @@ void sendCommands() {
     uint16_t address = GetAddr6LoWPAN();
     char payload[MAX_LEN];
 
-    for (size_t i = 0; i < COMM_INTERVAL; ++i) {
+    for (size_t i = 0; i < COMM_AMOUNT; ++i) {
         if (commandsToSend[i] == EMPTY_COMMAND) {
             continue;
         }
