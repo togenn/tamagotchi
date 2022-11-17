@@ -95,9 +95,10 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
             data_values[dataCollected] = data;
             /*
             char str[64];
-            sprintf(str, "%.2f,%.2f,%.2f\n", data.rx, data.ry, data.rz);
+            sprintf(str, "%.2f,%.2f,%.2f\n", data.ax, data.ay, data.az);
             System_printf(str);
             */
+
 
             if (++dataCollected == DATA_POINTS) {
                 //System_flush();
@@ -117,25 +118,25 @@ void recogniseCommand(struct data_point* data) {
     // and normalizing the z-axis (orientation does not matter)
     float xyzAccArr[3][DATA_POINTS];
     for (int i = 0; i < DATA_POINTS; ++i) {
-        xyzAccArr[0][i] = data->ax;
-        xyzAccArr[1][i] = data->ay;
-        xyzAccArr[2][i] = (abs(data->az)-1);
+        xyzAccArr[0][i] = data[i].ax;
+        xyzAccArr[1][i] = data[i].ay;
+        xyzAccArr[2][i] = (fabs(data[i].az)-1);
     }
 
    // Gathering samples from each axis of the gyroscope,
    // and taking the absolute values from each sample
    float xyzGyroArr[3][DATA_POINTS];
    for (int j = 0; j < (DATA_POINTS + 1); ++j) {
-       xyzGyroArr[0][j] = abs(data->rx);
-       xyzGyroArr[1][j] = abs(data->ry);
-       xyzGyroArr[2][j] = abs(data->rz);
+       xyzGyroArr[0][j] = abs(data[j].rx);
+       xyzGyroArr[1][j] = abs(data[j].ry);
+       xyzGyroArr[2][j] = abs(data[j].rz);
    }
 
    // Sweeping through the 5 data points, three at a time
    for (int k = 0; k < COMM_AMOUNT; ++k) {
 
         // Summing the accelerometer values together for comparison
-        float rowsum[3];
+        float rowsum[3] = {0, 0, 0};
         for (int rA = 0; rA < 3; ++rA) {
             for (int cA = k; cA < (COMM_AMOUNT + k); ++cA) {
                 rowsum[rA] += xyzAccArr[rA][cA];
@@ -152,7 +153,7 @@ void recogniseCommand(struct data_point* data) {
         for (int rG = 0; rG < 3; ++rG) {
             for (int cG = k; cG < (COMM_AMOUNT + k); ++cG) {
                 if (xyzGyroArr[rG][cG] > gyroL) {
-                    rotArr[rG] = 0;
+                    rotArr[rG] = 1;
                     break;
                 } else {
                     rotArr[rG] = 1;
@@ -170,6 +171,8 @@ void recogniseCommand(struct data_point* data) {
             commandToSend = EAT;
         }
 
+        System_printf(getCommandAsStr(commandToSend));
+        System_flush();
         commandsToSend[k] = commandToSend;
     }
 }
