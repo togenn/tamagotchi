@@ -8,9 +8,9 @@
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Clock.h>
 #include <xdc/runtime/System.h>
-#include "Board.h"
-
 #include <stdio.h>
+#include <stdbool.h>
+#include "Board.h"
 
 #include "UARTCommunication.h"
 #include "communication.h"
@@ -23,12 +23,15 @@
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
 
+bool dataReceived = false;
+
 static void UARTWriteCallback(UART_Handle handle, void *txBuf, size_t size) {
 
 }
 
 static void UARTReadCallback(UART_Handle handle, void *rxBuf, size_t size) {
-
+    dataReceived = true;
+    UART_read(handle, rxBuf, MAX_LEN);
 }
 
 void initUARTCommTask(void) {
@@ -38,7 +41,7 @@ void initUARTCommTask(void) {
     Task_Params_init(&taskParams);
     taskParams.stackSize = STACKSIZE;
     taskParams.stack = taskStack;
-    taskParams.priority = 2;
+    taskParams.priority = 1;
 
     taskHandle = Task_create((Task_FuncPtr) UARTCommTaskFxn, &taskParams, NULL);
     if (taskHandle == NULL) {
@@ -64,34 +67,38 @@ void UARTCommTaskFxn(UArg arg0, UArg arg1) {
     UART_Handle handle;
 
     initUART(&handle);
-
     char receivedPayload[MAX_LEN];
+    UART_read(handle, receivedPayload, MAX_LEN);
+
     while (1) {
 
-        if (UART_read(handle, receivedPayload, MAX_LEN)){
+        if (dataReceived) {
             handleReceivedMessage(receivedPayload);
-            memset(receivedPayload, 0 , MAX_LEN);
+            dataReceived= false;
         }
 
-        sendCommandUART(&handle, EAT);
-
-        Task_sleep(1000000 / Clock_tickPeriod);
+        if (programState == COMMUNICATION) {
+            sendCommandsUART(&handle);
+            programState = UPDATE_UI;
+        }
     }
 
 }
 
-void formatUARTPayload(char* payload, command commandToSend) {
-    char idStr[9];
-    sprintf(idStr, "id:%d,", OWN_ID);
+void formatUARTPayload(char* payload) {
+    char idStr[9] = {'\0'};
+    sprintf(idStr, "id:%d", OWN_ID);
     strcat(payload, idStr);
-    formatPayload(payload, commandToSend);
+    formatPayload(payload);
 }
 
-void sendCommandUART(UART_Handle* handle, command commandToSend) {
+void sendCommandsUART(UART_Handle* handle) {
     static char payload[MAX_LEN];
     memset(payload, '\0', MAX_LEN);
-    formatUARTPayload(payload, commandToSend);
-    UART_write(*handle, payload, MAX_LEN);
+    formatUARTPayload(payload);
+    if (payload[7] != '\0') {
+        UART_write(*handle, payload, MAX_LEN);
+    }
 }
 
 

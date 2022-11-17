@@ -4,6 +4,8 @@
 
 #define COMM_AMOUNT 3
 
+#include <inttypes.h>
+
 #include "stateMachine.h"
 
  typedef enum command {
@@ -13,17 +15,21 @@
     EXERCISE,
 } command;
 
-typedef enum msg1 {
-    EMPTY_MSG1=0,
+typedef enum {
+    EMPTY_MSG = 0,
     SUNNY,
-    DARK
-} msg1;
-
-typedef enum msg2 {
-    EMPTY_MSG2=0,
+    DARK,
     HOT,
     COLD
-} msg2;
+} customMsg;
+
+typedef struct {
+    uint8_t eatAmount;
+    uint8_t petAmount;
+    uint8_t exerciseAmount;
+    customMsg msg1ToSend;
+    customMsg msg2ToSend;
+} commandStruct;
 
 static inline const char* getCommandAsStr(command cmd) {
     static const char* commandStrings[] = {"", "EAT", "PET", "EXERCISE"};
@@ -31,21 +37,14 @@ static inline const char* getCommandAsStr(command cmd) {
     return commandStrings[cmd];
 }
 
-static inline const char* getMsg1AsStr(command cmd) {
-    static const char* msg1Strings[] = {"", "SUNNY", "DARK"};
+static inline const char* getCustomMsgAsStr(customMsg msg) {
+    static const char* msgStrings[] = {"", "SUNNY", "DARK", "HOT", "COLD"};
 
-    return msg1Strings[cmd];
-}
-
-static inline const char* getMsg2AsStr(command cmd) {
-    static const char* msg2Strings[] = {"", "HOT", "COLD"};
-
-    return msg2Strings[cmd];
+    return msgStrings[msg];
 }
 
 
-extern command commandsToSend[COMM_AMOUNT];
-extern msg1 msg1ToSend;
-extern msg2 msg2ToSend;
+extern commandStruct commandsToSend;
+
 
 #endif /* HEADERS_COMMANDS_H_ */

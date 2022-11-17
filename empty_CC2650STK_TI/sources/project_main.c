@@ -37,12 +37,11 @@ tamagotchiState tState = OK;
 
 Void clkFxn(UArg arg0) {
     if (programState == WAITING) {
-        programState = READ_ACCEL_DATA;
+        programState = COMMUNICATION;
     }
 }
 
 static void initProgram() {
-    initLeds();
 
     //initAccelSensorTask();
     //initCommunicationTask();
@@ -54,7 +53,7 @@ static void initProgram() {
    Clock_Params clkParams;
 
    Clock_Params_init(&clkParams);
-   uint32_t period = 100000 / Clock_tickPeriod;
+   uint32_t period = 1000000 / Clock_tickPeriod;
    clkParams.period = period;
    clkParams.startFlag = TRUE;
 

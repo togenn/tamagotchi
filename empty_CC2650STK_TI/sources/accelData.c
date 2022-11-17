@@ -81,7 +81,6 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
     initAccelSensor(&i2c, &i2cParams);
 
     uint8_t dataCollected = 0;
-    uint8_t commandsAnalyzed = 0;
     struct data_point data;
     struct data_point data_values[DATA_POINTS];
     while (1) {
@@ -101,11 +100,9 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
 
 
             if (++dataCollected == DATA_POINTS) {
-                //System_flush();
                 recogniseCommand(data_values);
                 dataCollected = 0;
-
-                ++commandsAnalyzed;
+                programState = UPDATE_UI;
             }
         }
         Task_sleep(90000 / Clock_tickPeriod);
@@ -162,18 +159,14 @@ void recogniseCommand(struct data_point* data) {
         }
 
         // Conditions for the commands
-        command commandToSend = EMPTY_COMMAND;
         if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1 && rotArr[1] && rotArr[2]) {
-            commandToSend = PET;
+            commandsToSend.petAmount++;
         } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1 && rotArr[0] && rotArr[2]) {
-            commandToSend = EXERCISE;
+            commandsToSend.exerciseAmount++;
         } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1 && rotArr[0] && rotArr[1]) {
-            commandToSend = EAT;
+            commandsToSend.eatAmount++;
         }
 
-        System_printf(getCommandAsStr(commandToSend));
-        System_flush();
-        commandsToSend[k] = commandToSend;
     }
 }
 

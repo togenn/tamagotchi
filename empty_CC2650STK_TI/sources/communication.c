@@ -16,7 +16,7 @@
 #include "led.h"
 
 #define MAX_LEN 80
-#define OWN_ID 19
+#define OWN_ID 2019
 
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
@@ -28,7 +28,7 @@ void initCommunicationTask(void) {
     Task_Params_init(&taskParams);
     taskParams.stackSize = STACKSIZE;
     taskParams.stack = taskStack;
-    taskParams.priority = 2;
+    taskParams.priority = 1;
 
     taskHandle = Task_create((Task_FuncPtr) communicationTaskFxn, &taskParams, NULL);
     if (taskHandle == NULL) {
@@ -44,57 +44,82 @@ void communicationTaskFxn(UArg arg0, UArg arg1) {
     char receivedPayload[MAX_LEN];
     uint16_t senderAddr;
     while (1) {
+        changeLedState(led2Handle);
+        if (GetRXFlag()){
+            memset(receivedPayload, 0 , MAX_LEN);
+            Receive6LoWPAN(&senderAddr, receivedPayload, MAX_LEN);
+            handleReceivedMessage(receivedPayload);
+        }
         if (programState == COMMUNICATION) {
-            changeLedState(led2Handle);
-            if (GetRXFlag()){
-                memset(receivedPayload, 0 , MAX_LEN);
-                Receive6LoWPAN(&senderAddr, receivedPayload, MAX_LEN);
-                handleReceivedMessage(receivedPayload);
-            }
-
             sendCommands();
             StartReceive6LoWPAN();
-            memset(commandsToSend, EMPTY_COMMAND, sizeof(commandsToSend));
+            memset(&commandsToSend, 0, sizeof(commandsToSend));
             programState = WAITING;
         }
-        Task_sleep(1000000 / Clock_tickPeriod);
     }
 
 }
 
 void sendCommands() {
     uint16_t address = GetAddr6LoWPAN();
-    char payload[MAX_LEN];
+    char payload[MAX_LEN] = {'\0'};
 
-    for (size_t i = 0; i < COMM_AMOUNT; ++i) {
-        if (commandsToSend[i] == EMPTY_COMMAND) {
-            continue;
-        }
-        memset(payload, 0, MAX_LEN);
-        formatPayload(payload, commandsToSend[i]);
-        System_printf(payload);
-        System_flush();
-        Send6LoWPAN(address, (uint8_t*) payload, strlen(payload));
-    }
+    formatPayload(payload);
+
+    Send6LoWPAN(address, (uint8_t*) payload, strlen(payload));
 }
 
-void formatPayload(char* payload, command commandToSend) {
+void formatPayload(char* payload) {
+    appendFormattedCommand(payload, EAT, commandsToSend.eatAmount);
+    appendFormattedCommand(payload, PET, commandsToSend.petAmount);
+    appendFormattedCommand(payload, EXERCISE, commandsToSend.exerciseAmount);
+    appendFormattedMessage(payload, commandsToSend.msg1ToSend, 1);
+    appendFormattedMessage(payload, commandsToSend.msg2ToSend, 2);
+}
+
+void appendFormattedCommand(char* payload, command commandToSend, uint8_t amountOfCommands) {
+    if (amountOfCommands == 0) {
+        return;
+    }
+    if (payload[0] != '\0') {
+        strcat(payload, ",");
+    }
     strcat(payload, getCommandAsStr(commandToSend));
     strcat(payload, ":");
-    strcat(payload, "1");
+    char amountOfCommandsStr[2];
+    sprintf(amountOfCommandsStr, "%d", amountOfCommands);
+    strcat(payload, amountOfCommandsStr);
+}
+
+void appendFormattedMessage(char* payload, customMsg msgToSend, uint8_t msgNum) {
+    if (msgToSend == EMPTY_MSG) {
+        return;
+    }
+    if (payload[0] != '\0') {
+        strcat(payload, ",");
+    }
+    char msgNumStr[2];
+    sprintf(msgNumStr, "%d", msgNum);
+    strcat(payload, "MSG");
+    strcat(payload, msgNumStr);
+    strcat(payload, ":");
+    strcat(payload, getCustomMsgAsStr(msgToSend));
 }
 
 void handleReceivedMessage(char* receivedPayload) {
     char* id = strtok(receivedPayload, ",");
     char* command = strtok(NULL, ",");
-    static char ownId[5];
+    char commandStartsWith[5];
+    strncpy(commandStartsWith, command, 4);
+    commandStartsWith[4] = '\0';
+    char ownId[5];
     sprintf(ownId, "%d", OWN_ID);
 
-    if (id && command) {
-        if (!strcmp(id, ownId) && !strcmp(command, "BEEP")) {
-            tState = CRITICAL;
-        }
+    if (!strcmp(id, ownId) && !strcmp(commandStartsWith, "BEEP")) {
+        tState = CRITICAL;
     }
+
+
 }
 
 

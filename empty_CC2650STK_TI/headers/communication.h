@@ -14,7 +14,9 @@
 #include "commands.h"
 
 void initCommunicationTask(void);
-void formatPayload(char* payload, command commandToSend);
+void formatPayload(char* payload);
+void appendFormattedCommand(char* payload, command commandToSend, uint8_t amountOfCommands);
+void appendFormattedMessage(char* payload, customMsg msgToSend, uint8_t msgNum);
 void handleReceivedMessage(char* receivedPayload);
 
 void communicationTaskFxn(UArg arg0, UArg arg1);

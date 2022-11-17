@@ -51,6 +51,7 @@ void initUpdateUITask(void) {
     Task_Params_init(&taskParams);
     taskParams.stackSize = STACKSIZE;
     taskParams.stack = &taskStack;
+    taskParams.priority = 2;
     task = Task_create((Task_FuncPtr)updateUIFxn, &taskParams, NULL);
     if (task == NULL) {
        System_abort("Update UI Task creation failed!");
@@ -66,9 +67,9 @@ void updateUIFxn(UArg arg0, UArg arg1) {
             bool commandRecognized = checkForCommand();
             doBuzzerTask(commandRecognized);
             doLedTask(commandRecognized);
-            programState = COMMUNICATION;
+            programState = WAITING;
         }
-        Task_sleep(100000 / Clock_tickPeriod);
+        Task_sleep(90000 / Clock_tickPeriod);
     }
 }
 
@@ -84,18 +85,18 @@ void doBuzzerTask(bool commandRecognized) {
 
     }
     if (tState == CRITICAL) {
-            noteInfo currentMelody[] = {{NOTE_G3, 400}, {NOTE_C4, 400}};
-            size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
-            openBuzzer(hBuzzer);
-            playMelody(currentMelody, melodySize);
-            closeBuzzer();
+        noteInfo currentMelody[] = {{NOTE_G3, 400}, {NOTE_C4, 400}};
+        size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
+        openBuzzer(hBuzzer);
+        playMelody(currentMelody, melodySize);
+        closeBuzzer();
     }
 }
 
 
 void doLedTask(bool commandRecognized) {
-    uint_t redLedStatus = getLedState(redLedHandle); // 0 = off, 1 = on
-    uint_t greenLedStatus = getLedState(greenLedHandle);
+    uint8_t redLedStatus = getLedState(redLedHandle); // 0 = off, 1 = on
+    uint8_t greenLedStatus = getLedState(greenLedHandle);
     if (commandRecognized) {
         changeLedState(greenLedHandle);
         DELAY_MS(500);
@@ -103,16 +104,14 @@ void doLedTask(bool commandRecognized) {
     }
     if (tState == CRITICAL && redLedStatus == 0) {
         changeLedState(redLedHandle);
-    }
-    if (tState == OK && redLedStatus == 1) {
+    } else if (tState == OK && redLedStatus == 1) {
         changeLedState(redLedHandle);
     }
 }
 
 bool checkForCommand() {
-    int arraySize = sizeof(commandsToSend) / sizeof(commandsToSend[0]);
-    for(int i=0; i < arraySize; i++) {
-        if (commandsToSend[i] != EMPTY_COMMAND) return true;
+    if (commandsToSend.eatAmount > 0 || commandsToSend.petAmount > 0 || commandsToSend.exerciseAmount > 0) {
+        return true;
     }
     return false;
 }
