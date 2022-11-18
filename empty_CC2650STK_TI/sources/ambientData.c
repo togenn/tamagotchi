@@ -16,6 +16,7 @@
 #include "opt3001.h"
 
 #include "ambientData.h"
+#include "commands.h"
 
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
