@@ -104,7 +104,7 @@
 							<tool id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.66780005" name="XDCtools" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH.521310433" name="XDCpath package repositories (--xdcpath)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.XDC_PATH" valueType="stringList">
 									<listOptionValue builtIn="false" value="${COM_TI_RTSC_TIRTOSCC13XX_CC26XX_REPOS}"/>
-									<listOptionValue builtIn="false" value="C:\ti\xdctools_3_32_01_22_core"/>
+									<listOptionValue builtIn="false" value="C:\ti\xdctools_3_32_00_06_core"/>
 								</option>
 								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.TARGET.1748482474" name="Target (-t)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.TARGET" value="ti.targets.arm.elf.M3" valueType="string"/>
 								<option id="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM.250016372" name="Platform (-p)" superClass="com.ti.rtsc.buildDefinitions.XDC_3.16.tool.PLATFORM" value="ti.platforms.simplelink:CC2650F128" valueType="string"/>

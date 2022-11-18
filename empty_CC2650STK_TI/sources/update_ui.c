@@ -24,7 +24,8 @@ PIN_Config cBuzzer[] = {
   Board_BUZZER | PIN_GPIO_OUTPUT_EN | PIN_GPIO_LOW | PIN_PUSHPULL | PIN_DRVSTR_MAX,
   PIN_TERMINATE
 };
-
+// Background music
+noteInfo bgMusic[] = {{NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},{NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_B2, 800}, {NOTE_C3, 800},{NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},{NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}};
 
 // green led = led1Handle, led1State
 #define greenLedHandle led1Handle
@@ -57,7 +58,33 @@ void initUpdateUITask(void) {
        System_abort("Update UI Task creation failed!");
     }
 
+    Clock_Handle clkHandle;
+    Clock_Params clkParams;
 
+    Clock_Params_init(&clkParams);
+    uint32_t period = 400000 / Clock_tickPeriod;
+    clkParams.period = period;
+    clkParams.startFlag = TRUE;
+
+    clkHandle = Clock_create((Clock_FuncPtr) musicTimerFxn, period, &clkParams, NULL);
+    if (clkHandle == NULL) {
+       System_abort("Clock create failed");
+    }
+
+
+}
+
+void musicTimerFxn(UArg arg0) {
+    static int noteCounter = 0;
+    size_t melodySize = sizeof(bgMusic) / sizeof(bgMusic[0]);
+    openBuzzer(hBuzzer);
+    uint16_t note = bgMusic[noteCounter].note;
+    buzzerSetFrequency(note);
+    noteCounter++;
+    if (noteCounter == melodySize) {
+        closeBuzzer();
+        noteCounter = 0;
+    }
 }
 
 
@@ -69,15 +96,16 @@ void updateUIFxn(UArg arg0, UArg arg1) {
             doLedTask(commandRecognized);
             programState = COMMUNICATION;
         }
-        Task_sleep(90000 / Clock_tickPeriod);
+        Task_sleep(100000 / Clock_tickPeriod);
     }
 }
 
 
 void doBuzzerTask(bool commandRecognized) {
     if (commandRecognized) {
+        closeBuzzer(); // Interrupt bg music
         // Play cmd jingle
-        noteInfo currentMelody[] = {{NOTE_B4, 400}};
+        noteInfo currentMelody[] = {{NOTE_E3, 400}, {NOTE_E4, 400}};
         size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
         openBuzzer(hBuzzer);
         playMelody(currentMelody, melodySize);
@@ -85,6 +113,7 @@ void doBuzzerTask(bool commandRecognized) {
 
     }
     if (tState == CRITICAL) {
+        closeBuzzer(); // Interrupt bg music
         noteInfo currentMelody[] = {{NOTE_G3, 400}, {NOTE_C4, 400}};
         size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
         openBuzzer(hBuzzer);

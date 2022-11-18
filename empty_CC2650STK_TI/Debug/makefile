@@ -11,16 +11,21 @@ GEN_CMDS__FLAG := -l"configPkg/linker.cmd"
 
 ORDERED_OBJS += \
 "./hardware_sources/CC2650STK.obj" \
+"./hardware_sources/buzzer.obj" \
 "./sensors/bmp280.obj" \
 "./sensors/hdc1000.obj" \
 "./sensors/mpu9250.obj" \
 "./sensors/opt3001.obj" \
 "./sensors/tmp007.obj" \
+"./sources/UARTCommmunication.obj" \
 "./sources/accelData.obj" \
-"./sources/buzzer.obj" \
+"./sources/ambientData.obj" \
+"./sources/commands.obj" \
 "./sources/communication.obj" \
+"./sources/led.obj" \
 "./sources/notePlayer.obj" \
 "./sources/project_main.obj" \
+"./sources/update_ui.obj" \
 "./wireless/CWC_CC2650_154Drv.obj" \
 "./wireless/CWC_IntegrTest.obj" \
 "./wireless/ERRORS.obj" \
@@ -163,7 +168,7 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 empty_CC2650STK_TI.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: Arm Linker'
-	"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/bin/armcl" -mv7M3 --code_state=16 --float_support=none -me --define=ccs -g --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m"empty_CC2650STK_TI.map" --heap_size=0 --stack_size=256 -i"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/lib" -i"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="empty_CC2650STK_TI_linkInfo.xml" --rom_model -o "empty_CC2650STK_TI.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/bin/armcl" -mv7M3 --code_state=16 --float_support=none -me -O1 --opt_for_speed=3 --define=ccs -g --c11 --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m"empty_CC2650STK_TI.map" --heap_size=0 --stack_size=256 -i"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/lib" -i"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-arm_20.2.5.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="empty_CC2650STK_TI_linkInfo.xml" --rom_model -o "empty_CC2650STK_TI.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
@@ -177,8 +182,8 @@ empty_CC2650STK_TI.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "hardware_sources\CC2650STK.obj" "sensors\bmp280.obj" "sensors\hdc1000.obj" "sensors\mpu9250.obj" "sensors\opt3001.obj" "sensors\tmp007.obj" "sources\accelData.obj" "sources\buzzer.obj" "sources\communication.obj" "sources\notePlayer.obj" "sources\project_main.obj" "wireless\CWC_CC2650_154Drv.obj" "wireless\CWC_IntegrTest.obj" "wireless\ERRORS.obj" "wireless\comm_lib.obj" 
-	-$(RM) "hardware_sources\CC2650STK.d" "sensors\bmp280.d" "sensors\hdc1000.d" "sensors\mpu9250.d" "sensors\opt3001.d" "sensors\tmp007.d" "sources\accelData.d" "sources\buzzer.d" "sources\communication.d" "sources\notePlayer.d" "sources\project_main.d" "wireless\CWC_CC2650_154Drv.d" "wireless\CWC_IntegrTest.d" "wireless\ERRORS.d" "wireless\comm_lib.d" 
+	-$(RM) "hardware_sources\CC2650STK.obj" "hardware_sources\buzzer.obj" "sensors\bmp280.obj" "sensors\hdc1000.obj" "sensors\mpu9250.obj" "sensors\opt3001.obj" "sensors\tmp007.obj" "sources\UARTCommmunication.obj" "sources\accelData.obj" "sources\ambientData.obj" "sources\commands.obj" "sources\communication.obj" "sources\led.obj" "sources\notePlayer.obj" "sources\project_main.obj" "sources\update_ui.obj" "wireless\CWC_CC2650_154Drv.obj" "wireless\CWC_IntegrTest.obj" "wireless\ERRORS.obj" "wireless\comm_lib.obj" 
+	-$(RM) "hardware_sources\CC2650STK.d" "hardware_sources\buzzer.d" "sensors\bmp280.d" "sensors\hdc1000.d" "sensors\mpu9250.d" "sensors\opt3001.d" "sensors\tmp007.d" "sources\UARTCommmunication.d" "sources\accelData.d" "sources\ambientData.d" "sources\commands.d" "sources\communication.d" "sources\led.d" "sources\notePlayer.d" "sources\project_main.d" "sources\update_ui.d" "wireless\CWC_CC2650_154Drv.d" "wireless\CWC_IntegrTest.d" "wireless\ERRORS.d" "wireless\comm_lib.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
 	-@echo ' '

@@ -35,12 +35,12 @@
 state programState = WAITING;
 tamagotchiState tState = OK;
 
-
 Void accelDataTimerFxn(UArg arg0) {
     if (programState == WAITING) {
         programState = READ_ACCEL_DATA;
     }
 }
+
 
 static void initProgram() {
 

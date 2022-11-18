@@ -57,3 +57,5 @@ src/
 .cproject
 Debug/*
 /Debug/
+Debug/
+empty_CC2650STK_TI/Debug/
