@@ -4,9 +4,27 @@
  *  Created on: 18 Nov 2022
  *      Author: Toni
  */
+
+#include <ti/sysbios/knl/Task.h>
+#include <xdc/runtime/System.h>
+#include <ti/sysbios/knl/Clock.h>
+#include <ti/drivers/I2C.h>
+#include <ti/drivers/i2c/I2CCC26XX.h>
+#include <stdio.h>
+#include "Board.h"
+#include "tmp007.h"
+#include "opt3001.h"
+
 #include "ambientData.h"
 
-#define STACKSIZE 1024
+#define STACKSIZE 2048
+static char taskStack[STACKSIZE];
+
+#define TMP_HOT_LIMIT 35
+#define TMP_COLD_LIMIT 20
+
+#define BRIGHTNESS_SUNNY_LIMIT 200
+#define BRIGHTNESS_DARK_LIMIT 2
 
 void initAmbientDataTask(void) {
     Task_Params taskParams;
@@ -17,9 +35,43 @@ void initAmbientDataTask(void) {
     taskParams.stack = taskStack;
     taskParams.priority = 2;
 
-    taskHandle = Task_create((Task_FuncPtr) communicationTaskFxn, &taskParams, NULL);
+    taskHandle = Task_create((Task_FuncPtr) ambientDataTaskFxn, &taskParams, NULL);
     if (taskHandle == NULL) {
         System_abort("Communication task creation failed\n");
     }
 }
 
+void ambientDataTaskFxn(UArg arg1, UArg arg2) {
+    I2C_Handle i2c;
+    I2C_Params i2cParams;
+    I2C_Params_init(&i2cParams);
+    i2c = I2C_open(Board_I2C, &i2cParams);
+    if (i2c == NULL) {
+        System_abort("Error Initializing MPU\n");
+    }
+
+    tmp007_setup(&i2c);
+    opt3001_setup(&i2c);
+    I2C_close(i2c);
+
+    while (1) {
+        i2c = I2C_open(Board_I2C, &i2cParams);
+        double tmp = tmp007_get_data(&i2c);
+        if (tmp > TMP_HOT_LIMIT) {
+            commandsToSend.msg1ToSend = HOT;
+        } else if (tmp < TMP_COLD_LIMIT) {
+            commandsToSend.msg1ToSend = COLD;
+        }
+
+        double brightness = opt3001_get_data(&i2c);
+        if (brightness > BRIGHTNESS_SUNNY_LIMIT) {
+            commandsToSend.msg2ToSend = SUNNY;
+        } else if (brightness < BRIGHTNESS_DARK_LIMIT) {
+            commandsToSend.msg2ToSend = DARK;
+        }
+
+        I2C_close(i2c);
+
+        Task_sleep(900000 / Clock_tickPeriod);
+    }
+}

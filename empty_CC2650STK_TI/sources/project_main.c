@@ -30,14 +30,15 @@
 #include "led.h"
 #include "tamagotchiState.h"
 #include "update_ui.h"
+#include "ambientData.h"
 
 state programState = WAITING;
 tamagotchiState tState = OK;
 
 
-Void clkFxn(UArg arg0) {
+Void accelDataTimerFxn(UArg arg0) {
     if (programState == WAITING) {
-        programState = COMMUNICATION;
+        programState = READ_ACCEL_DATA;
     }
 }
 
@@ -45,19 +46,19 @@ static void initProgram() {
 
     //initAccelSensorTask();
     //initCommunicationTask();
-    //initBuzzerTask();
-    initUpdateUITask();
-    initUARTCommTask();
+    //initUpdateUITask();
+    //initUARTCommTask();
+    initAmbientDataTask();
 
    Clock_Handle clkHandle;
    Clock_Params clkParams;
 
    Clock_Params_init(&clkParams);
-   uint32_t period = 1000000 / Clock_tickPeriod;
+   uint32_t period = 100000 / Clock_tickPeriod;
    clkParams.period = period;
    clkParams.startFlag = TRUE;
 
-   clkHandle = Clock_create((Clock_FuncPtr)clkFxn, period, &clkParams, NULL);
+   clkHandle = Clock_create((Clock_FuncPtr) accelDataTimerFxn, period, &clkParams, NULL);
    if (clkHandle == NULL) {
       System_abort("Clock create failed");
    }

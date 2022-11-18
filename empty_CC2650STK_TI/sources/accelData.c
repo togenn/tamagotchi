@@ -4,19 +4,18 @@
  *  Created on: 11 Oct 2022
  *      Author: Toni, Tuukka
  */
-#include "accelData.h"
-#include "stateMachine.h"
-#include "led.h"
 
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Clock.h>
 #include <ti/drivers/i2c/I2CCC26XX.h>
 #include <xdc/runtime/System.h>
 #include "Board.h"
-
 #include "mpu9250.h"
-
 #include <stdio.h>
+
+#include "accelData.h"
+#include "stateMachine.h"
+#include "tamagotchiState.h"
 
 
 #define STACKSIZE 2048
@@ -54,7 +53,7 @@ void initAccelSensor(I2C_Handle* i2c, I2C_Params* i2cParams) {
 
     *i2c = I2C_open(Board_I2C, i2cParams);
     if (i2c == NULL) {
-        System_abort("Error Initializing I2CMPU\n");
+        System_abort("Error Initializing I2C MPU\n");
     }
 
     mpu9250_setup(i2c);
@@ -63,9 +62,9 @@ void initAccelSensor(I2C_Handle* i2c, I2C_Params* i2cParams) {
 }
 
 void powerOnAccelSensor() {
-    static PIN_Handle powerPin;
-    static PIN_State  MpuPinState;
-    static const PIN_Config MpuPinConfig[] = {
+    PIN_Handle powerPin;
+    PIN_State  MpuPinState;
+    const PIN_Config MpuPinConfig[] = {
         Board_MPU_POWER  | PIN_GPIO_OUTPUT_EN | PIN_GPIO_HIGH | PIN_PUSHPULL | PIN_DRVSTR_MAX,
         PIN_TERMINATE
     };
@@ -86,7 +85,6 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
     while (1) {
 
         if (programState == READ_ACCEL_DATA) {
-            changeLedState(led1Handle);
             i2c = I2C_open(Board_I2C, &i2cParams);
             mpu9250_get_data(&i2c, &data.ax, &data.ay, &data.az, &data.rx, &data.ry, &data.rz);
             I2C_close(i2c);
@@ -161,10 +159,13 @@ void recogniseCommand(struct data_point* data) {
         // Conditions for the commands
         if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1 && rotArr[1] && rotArr[2]) {
             commandsToSend.petAmount++;
+            tState = OK;
         } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1 && rotArr[0] && rotArr[2]) {
             commandsToSend.exerciseAmount++;
+            tState = OK;
         } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1 && rotArr[0] && rotArr[1]) {
             commandsToSend.eatAmount++;
+            tState = OK;
         }
 
     }

@@ -80,7 +80,7 @@ void UARTCommTaskFxn(UArg arg0, UArg arg1) {
         if (programState == COMMUNICATION) {
             sendCommandsUART(&handle);
             memset(&commandsToSend, 0, sizeof(commandsToSend));
-            programState = UPDATE_UI;
+            programState = WAITING;
         }
     }
 
