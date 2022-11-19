@@ -17,6 +17,12 @@
 #include "commands.h"
 #include "buzzer.h"
 
+//note lenghts in ms
+#define BPM 110.0
+#define QUARTER_NOTE 1 / (BPM / 60) * 1000
+#define EIGHT_NOTE QUARTER_NOTE / 2
+#define SIXTEENTH_NOTE EIGHT_NOTE / 2
+
 // Buzzer configuration
 static PIN_Handle hBuzzer;
 static PIN_State sBuzzer;
@@ -25,7 +31,40 @@ PIN_Config cBuzzer[] = {
   PIN_TERMINATE
 };
 // Background music
-noteInfo bgMusic[] = {{NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},{NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_B2, 800}, {NOTE_C3, 800},{NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},{NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}};
+//notes for the song: https://github.com/robsoncouto/arduino-songs/blob/master/doom/doom.ino
+noteInfo bgMusic[] = {{NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800},
+                      {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},
+                      {NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800},
+                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_B2, 800}, {NOTE_C3, 800},
+                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800},
+                      {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},
+                      {NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800},
+                      {NOTE_AS2, 800}, {NOTE_AS2, 800}, {NOTE_AS2, 800}, {NOTE_NULL, 800},
+                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800},
+                      {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},
+                      {NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800},
+                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_B2, 800}, {NOTE_C3, 800},
+                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800},
+                      {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},
+                      {NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800},
+                      {NOTE_AS2, 800}, {NOTE_AS2, 800}, {NOTE_AS2, 800}, {NOTE_NULL, 800},
+                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_A3, 8}, {NOTE_A2, 8},
+                      {NOTE_A2, 8}, {NOTE_G3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8},
+                      {NOTE_F3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_DS3, 8},
+                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_E3, 8}, {NOTE_F3, 8},
+                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_A3, 8}, {NOTE_A2, 8},
+                      {NOTE_A2, 8}, {NOTE_G3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8},
+                      {NOTE_F3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_DS3, 8},
+                      {NOTE_DS3, 8}, {NOTE_DS3, 8}, {NOTE_DS3, 8},{NOTE_NULL, 800},
+                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_A3, 8}, {NOTE_A2, 8},
+                      {NOTE_A2, 8}, {NOTE_G3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8},
+                      {NOTE_F3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_DS3, 8},
+                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_E3, 8}, {NOTE_F3, 8},
+                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_A3, 8}, {NOTE_A2, 8},
+                      {NOTE_A2, 8}, {NOTE_G3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8},
+                      {NOTE_F3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_DS3, 8},
+                      {NOTE_DS3, 8}, {NOTE_DS3, 8}, {NOTE_DS3, 8},{NOTE_NULL, 800}
+};
 
 // green led = led1Handle, led1State
 #define greenLedHandle led1Handle
@@ -62,7 +101,7 @@ void initUpdateUITask(void) {
     Clock_Params clkParams;
 
     Clock_Params_init(&clkParams);
-    uint32_t period = 400000 / Clock_tickPeriod;
+    uint32_t period = 136000 / Clock_tickPeriod;
     clkParams.period = period;
     clkParams.startFlag = TRUE;
 
@@ -76,7 +115,7 @@ void initUpdateUITask(void) {
 
 void musicTimerFxn(UArg arg0) {
     static int noteCounter = 0;
-    size_t melodySize = sizeof(bgMusic) / sizeof(bgMusic[0]);
+    static size_t melodySize = sizeof(bgMusic) / sizeof(bgMusic[0]);
     openBuzzer(hBuzzer);
     uint16_t note = bgMusic[noteCounter].note;
     buzzerSetFrequency(note);

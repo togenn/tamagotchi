@@ -46,9 +46,9 @@ static void initProgram() {
 
     //initAccelSensorTask();
     //initCommunicationTask();
-    //initUpdateUITask();
+    initUpdateUITask();
     //initUARTCommTask();
-    initAmbientDataTask();
+    //initAmbientDataTask();
 
    Clock_Handle clkHandle;
    Clock_Params clkParams;
