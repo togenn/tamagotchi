@@ -19,7 +19,7 @@
 
 //note lenghts in ms
 #define BPM 110.0
-#define QUARTER_NOTE 1 / (BPM / 60) * 1000
+#define QUARTER_NOTE 1.0 / (BPM / 60.0) * 1000
 #define EIGHT_NOTE QUARTER_NOTE / 2
 #define SIXTEENTH_NOTE EIGHT_NOTE / 2
 
@@ -32,38 +32,38 @@ PIN_Config cBuzzer[] = {
 };
 // Background music
 //notes for the song: https://github.com/robsoncouto/arduino-songs/blob/master/doom/doom.ino
-noteInfo bgMusic[] = {{NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800},
-                      {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},
-                      {NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800},
-                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_B2, 800}, {NOTE_C3, 800},
-                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800},
-                      {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},
-                      {NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800},
-                      {NOTE_AS2, 800}, {NOTE_AS2, 800}, {NOTE_AS2, 800}, {NOTE_NULL, 800},
-                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800},
-                      {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},
-                      {NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800},
-                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_B2, 800}, {NOTE_C3, 800},
-                      {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_E3, 800}, {NOTE_E2, 800},
-                      {NOTE_E2, 800}, {NOTE_D3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800},
-                      {NOTE_C3, 800}, {NOTE_E2, 800}, {NOTE_E2, 800}, {NOTE_AS2, 800},
-                      {NOTE_AS2, 800}, {NOTE_AS2, 800}, {NOTE_AS2, 800}, {NOTE_NULL, 800},
-                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_A3, 8}, {NOTE_A2, 8},
-                      {NOTE_A2, 8}, {NOTE_G3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8},
-                      {NOTE_F3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_DS3, 8},
-                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_E3, 8}, {NOTE_F3, 8},
-                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_A3, 8}, {NOTE_A2, 8},
-                      {NOTE_A2, 8}, {NOTE_G3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8},
-                      {NOTE_F3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_DS3, 8},
-                      {NOTE_DS3, 8}, {NOTE_DS3, 8}, {NOTE_DS3, 8},{NOTE_NULL, 800},
-                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_A3, 8}, {NOTE_A2, 8},
-                      {NOTE_A2, 8}, {NOTE_G3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8},
-                      {NOTE_F3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_DS3, 8},
-                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_E3, 8}, {NOTE_F3, 8},
-                      {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_A3, 8}, {NOTE_A2, 8},
-                      {NOTE_A2, 8}, {NOTE_G3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8},
-                      {NOTE_F3, 8}, {NOTE_A2, 8}, {NOTE_A2, 8}, {NOTE_DS3, 8},
-                      {NOTE_DS3, 8}, {NOTE_DS3, 8}, {NOTE_DS3, 8},{NOTE_NULL, 800}
+const static noteInfo bgMusic[] = {{NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_D3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
+                      {NOTE_C3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_AS2, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_B2, SIXTEENTH_NOTE}, {NOTE_C3, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_D3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
+                      {NOTE_C3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_AS2, QUARTER_NOTE},
+                      {NOTE_NULL, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_D3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
+                      {NOTE_C3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_AS2, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_B2, SIXTEENTH_NOTE}, {NOTE_C3, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
+                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_D3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
+                      {NOTE_C3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_AS2, QUARTER_NOTE},
+                      {NOTE_NULL, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_G3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
+                      {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_F3, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_G3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
+                      {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, QUARTER_NOTE},
+                      {NOTE_NULL, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_G3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
+                      {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_F3, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
+                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_G3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
+                      {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, QUARTER_NOTE},
+                      {NOTE_NULL, SIXTEENTH_NOTE},
 };
 
 // green led = led1Handle, led1State
