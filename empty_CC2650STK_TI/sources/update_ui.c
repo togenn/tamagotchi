@@ -147,22 +147,26 @@ void updateUIFxn(UArg arg0, UArg arg1) {
 
 void doBuzzerTask(bool commandRecognized) {
     if (commandRecognized) {
-        closeBuzzer(); // Interrupt bg music
+        Clock_stop(clkHandle); // Interrupt bg music
+        closeBuzzer();
         // Play cmd jingle
         noteInfo currentMelody[] = {{NOTE_E3, 400}, {NOTE_E4, 400}};
         size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
         openBuzzer(hBuzzer);
         playMelody(currentMelody, melodySize);
         closeBuzzer();
+        Clock_start(clkHandle);
 
     }
     if (tState == CRITICAL) {
-        closeBuzzer(); // Interrupt bg music
+        Clock_stop(clkHandle); // Interrupt bg music
+        closeBuzzer();
         noteInfo currentMelody[] = {{NOTE_G3, 400}, {NOTE_C4, 400}};
         size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
         openBuzzer(hBuzzer);
         playMelody(currentMelody, melodySize);
         closeBuzzer();
+        Clock_start(clkHandle);
     }
 }
 
