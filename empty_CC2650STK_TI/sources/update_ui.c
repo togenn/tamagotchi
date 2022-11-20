@@ -74,7 +74,7 @@ const static noteInfo bgMusic[] = {{NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENT
 #define STACKSIZE 1024
 static char taskStack[STACKSIZE];
 
-
+Clock_Handle clkHandle;
 
 void initUpdateUITask(void) {
     // Init LEDs
@@ -97,7 +97,6 @@ void initUpdateUITask(void) {
        System_abort("Update UI Task creation failed!");
     }
 
-    Clock_Handle clkHandle;
     Clock_Params clkParams;
 
     Clock_Params_init(&clkParams);
@@ -118,6 +117,12 @@ void musicTimerFxn(UArg arg0) {
     static size_t melodySize = sizeof(bgMusic) / sizeof(bgMusic[0]);
     openBuzzer(hBuzzer);
     uint16_t note = bgMusic[noteCounter].note;
+    uint32_t noteLength = bgMusic[noteCounter].duration;
+
+    Clock_stop(clkHandle);
+    Clock_setPeriod(clkHandle, noteLength); // Set clock for note length
+    Clock_start(clkHandle);
+
     buzzerSetFrequency(note);
     noteCounter++;
     if (noteCounter == melodySize) {
