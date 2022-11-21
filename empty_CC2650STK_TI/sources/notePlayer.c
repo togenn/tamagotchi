@@ -13,9 +13,21 @@
 
 #define DELAY_MS(i)      (Task_sleep(((i) * 1000) / Clock_tickPeriod))
 
+// Buzzer configuration
+PIN_Handle hBuzzer;
+PIN_State sBuzzer;
+PIN_Config cBuzzer[] = {
+  Board_BUZZER | PIN_GPIO_OUTPUT_EN | PIN_GPIO_LOW | PIN_PUSHPULL | PIN_DRVSTR_MAX,
+  PIN_TERMINATE
+};
 
+void initBuzzerHandle() {
+    hBuzzer = PIN_open(&sBuzzer, cBuzzer);
+}
 
-
+PIN_Handle getBuzzerHandle() {
+    return hBuzzer;
+}
 
 
 void openBuzzer(PIN_Handle hBuzzer) {

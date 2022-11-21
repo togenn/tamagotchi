@@ -13,8 +13,9 @@ typedef struct {
     uint32_t duration;
 } noteInfo;
 
-
+PIN_Handle getBuzzerHandle();
 void initBuzzerTask();
+void initBuzzerHandle();
 
 void playNote(uint16_t frequency, uint32_t duration);
 void playMelody(noteInfo* melody, size_t melodyLength);
