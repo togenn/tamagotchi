@@ -8,7 +8,7 @@
 #ifndef HEADERS_STATEMACHINE_H_
 #define HEADERS_STATEMACHINE_H_
 
-typedef enum state { WAITING=1, READ_ACCEL_DATA, COMMUNICATION, UPDATE_UI} state;
+typedef enum state { WAITING=1, READ_ACCEL_DATA, UPDATE_UI, AMBIENT_DATA, COMMUNICATION } state;
 extern state programState;
 
 #endif /* HEADERS_STATEMACHINE_H_ */

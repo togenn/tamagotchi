@@ -74,14 +74,10 @@ double opt3001_get_data(I2C_Handle *i2c) {
     // JTKJ: Exercise 2. Complete this function to return the measured value as lux
 
 
-	double lux = -1.0; // return value of the function
-    // JTKJ: Find out the correct buffer sizes (n) with this sensor?
+	double lux = -1.0;
     uint8_t txBuffer[1];
     uint8_t rxBuffer[2];
 
-
-	// JTKJ: Fill in the i2cMessage data structure with correct values
-    //       as shown in the lecture material
     I2C_Transaction i2cTransaction;
     i2cTransaction.slaveAddress = Board_OPT3001_ADDR;
     txBuffer[0] = OPT3001_REG_RESULT;
@@ -101,9 +97,6 @@ double opt3001_get_data(I2C_Handle *i2c) {
 		    uint16_t multiplier = reg & 0xFFF;
 
 		    lux = 0.01 * (1 << exponent) * multiplier;
-	        // JTKJ: Here the conversion from register value to lux
-
-
 		} else {
 
 			System_printf("OPT3001: Data read failed!\n");

@@ -24,8 +24,8 @@ static char taskStack[STACKSIZE];
 #define TMP_HOT_LIMIT 35
 #define TMP_COLD_LIMIT 20
 
-#define BRIGHTNESS_SUNNY_LIMIT 200
-#define BRIGHTNESS_DARK_LIMIT 2
+#define BRIGHTNESS_SUNNY_LIMIT 300
+#define BRIGHTNESS_DARK_LIMIT 50
 
 void initAmbientDataTask(void) {
     Task_Params taskParams;
@@ -56,22 +56,29 @@ void ambientDataTaskFxn(UArg arg1, UArg arg2) {
     I2C_close(i2c);
 
     while (1) {
-        i2c = I2C_open(Board_I2C, &i2cParams);
-        double tmp = tmp007_get_data(&i2c);
-        if (tmp > TMP_HOT_LIMIT) {
-            commandsToSend.msg1ToSend = HOT;
-        } else if (tmp < TMP_COLD_LIMIT) {
-            commandsToSend.msg1ToSend = COLD;
+
+        if (programState == AMBIENT_DATA) {
+            i2c = I2C_open(Board_I2C, &i2cParams);
+
+            double tmp = tmp007_get_data(&i2c);
+            if (tmp > TMP_HOT_LIMIT) {
+                commandsToSend.msg1ToSend = HOT;
+            } else if (tmp < TMP_COLD_LIMIT) {
+                commandsToSend.msg1ToSend = COLD;
+            }
+
+            double brightness = opt3001_get_data(&i2c);
+            if (brightness > BRIGHTNESS_SUNNY_LIMIT) {
+                commandsToSend.msg2ToSend = SUNNY;
+            } else if (brightness < BRIGHTNESS_DARK_LIMIT) {
+                commandsToSend.msg2ToSend = DARK;
+            }
+
+            I2C_close(i2c);
+
+            programState = COMMUNICATION;
         }
 
-        double brightness = opt3001_get_data(&i2c);
-        if (brightness > BRIGHTNESS_SUNNY_LIMIT) {
-            commandsToSend.msg2ToSend = SUNNY;
-        } else if (brightness < BRIGHTNESS_DARK_LIMIT) {
-            commandsToSend.msg2ToSend = DARK;
-        }
-
-        I2C_close(i2c);
 
         Task_sleep(900000 / Clock_tickPeriod);
     }

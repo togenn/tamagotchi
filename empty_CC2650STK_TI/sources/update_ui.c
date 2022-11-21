@@ -109,7 +109,6 @@ void initUpdateUITask(void) {
        System_abort("Clock create failed");
     }
 
-
 }
 
 void musicTimerFxn(UArg arg0) {
@@ -138,7 +137,7 @@ void updateUIFxn(UArg arg0, UArg arg1) {
             bool commandRecognized = checkForCommand();
             doBuzzerTask(commandRecognized);
             doLedTask(commandRecognized);
-            programState = COMMUNICATION;
+            programState = AMBIENT_DATA;
         }
         Task_sleep(100000 / Clock_tickPeriod);
     }
@@ -158,15 +157,19 @@ void doBuzzerTask(bool commandRecognized) {
         Clock_start(clkHandle);
 
     }
+    static bool musicStopped = false;
     if (tState == CRITICAL) {
         Clock_stop(clkHandle); // Interrupt bg music
+        musicStopped = true;
         closeBuzzer();
         noteInfo currentMelody[] = {{NOTE_G3, 400}, {NOTE_C4, 400}};
         size_t melodySize = sizeof(currentMelody) / sizeof(currentMelody[0]);
         openBuzzer(hBuzzer);
         playMelody(currentMelody, melodySize);
         closeBuzzer();
+    } else if (tState == OK && musicStopped) {
         Clock_start(clkHandle);
+        musicStopped = false;
     }
 }
 

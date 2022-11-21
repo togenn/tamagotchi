@@ -22,18 +22,21 @@ void tmp007_setup(I2C_Handle *i2c) {
 
 double tmp007_get_data(I2C_Handle *i2c) {
 
-	double temperature = 0.0; // return value of the function
-    // JTKJ: Find out the correct buffer sizes with this sensor?
-    // char txBuffer[ n ];
-    // char rxBuffer{ n ];
-
-    // JTKJ: Fill in the i2cMessage data structure with correct values
-    //       as shown in the lecture material
+	double temperature = 0.0;
+    char txBuffer[1] = {TMP007_REG_TEMP};
+    char rxBuffer[2];
     I2C_Transaction i2cMessage;
+    i2cMessage.readBuf = rxBuffer;
+    i2cMessage.readCount = 2;
+    i2cMessage.writeBuf = txBuffer;
+    i2cMessage.writeCount = 1;
+    i2cMessage.slaveAddress = Board_TMP007_ADDR;
 
 	if (I2C_transfer(*i2c, &i2cMessage)) {
 
-        // JTKJ: Here the conversion from register value to temperature
+        int16_t regValue = (rxBuffer[0] << 8) | rxBuffer[1];
+        regValue >>= 2;
+        temperature = regValue * 0.03125;
 
 	} else {
 
