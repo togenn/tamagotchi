@@ -5,6 +5,7 @@
 #define COMM_AMOUNT 3
 
 #include <inttypes.h>
+#include <stdbool.h>
 
 #include "stateMachine.h"
 
@@ -29,6 +30,7 @@ typedef struct {
     uint8_t exerciseAmount;
     customMsg msg1ToSend;
     customMsg msg2ToSend;
+    bool customMsgSent;
 } commandStruct;
 
 static inline const char* getCommandAsStr(command cmd) {

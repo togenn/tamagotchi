@@ -9,6 +9,7 @@
 #include <xdc/runtime/System.h>
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "communication.h"
 #include "tamagotchiState.h"
@@ -44,7 +45,7 @@ void communicationTaskFxn(UArg arg0, UArg arg1) {
     char receivedPayload[MAX_LEN];
     uint16_t senderAddr;
     while (1) {
-        changeLedState(led2Handle);
+
         if (GetRXFlag()){
             memset(receivedPayload, 0 , MAX_LEN);
             Receive6LoWPAN(&senderAddr, receivedPayload, MAX_LEN);
@@ -53,7 +54,9 @@ void communicationTaskFxn(UArg arg0, UArg arg1) {
         if (programState == COMMUNICATION) {
             sendCommands();
             StartReceive6LoWPAN();
-            memset(&commandsToSend, 0, sizeof(commandsToSend));
+            commandsToSend.eatAmount = 0;
+            commandsToSend.exerciseAmount = 0;
+            commandsToSend.petAmount = 0;
             programState = WAITING;
         }
     }
@@ -65,16 +68,22 @@ void sendCommands() {
     char payload[MAX_LEN] = {'\0'};
 
     formatPayload(payload);
-
-    Send6LoWPAN(address, (uint8_t*) payload, strlen(payload));
+    if (payload[0] != '0') {
+        Send6LoWPAN(0x1234, (uint8_t*) payload, strlen(payload));
+    }
 }
 
 void formatPayload(char* payload) {
     appendFormattedCommand(payload, EAT, commandsToSend.eatAmount);
     appendFormattedCommand(payload, PET, commandsToSend.petAmount);
     appendFormattedCommand(payload, EXERCISE, commandsToSend.exerciseAmount);
-    appendFormattedMessage(payload, commandsToSend.msg1ToSend, 1);
-    appendFormattedMessage(payload, commandsToSend.msg2ToSend, 2);
+
+    if (!commandsToSend.customMsgSent) {
+        appendFormattedMessage(payload, commandsToSend.msg1ToSend, 1);
+        appendFormattedMessage(payload, commandsToSend.msg2ToSend, 2);
+        commandsToSend.customMsgSent = true;
+    }
+
 }
 
 void appendFormattedCommand(char* payload, command commandToSend, uint8_t amountOfCommands) {

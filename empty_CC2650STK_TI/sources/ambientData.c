@@ -60,6 +60,7 @@ void ambientDataTaskFxn(UArg arg1, UArg arg2) {
         if (programState == AMBIENT_DATA) {
             i2c = I2C_open(Board_I2C, &i2cParams);
 
+            customMsg currentMsg1 = commandsToSend.msg1ToSend;
             double tmp = tmp007_get_data(&i2c);
             if (tmp > TMP_HOT_LIMIT) {
                 commandsToSend.msg1ToSend = HOT;
@@ -67,11 +68,17 @@ void ambientDataTaskFxn(UArg arg1, UArg arg2) {
                 commandsToSend.msg1ToSend = COLD;
             }
 
+
+            customMsg currentMsg2 = commandsToSend.msg2ToSend;
             double brightness = opt3001_get_data(&i2c);
             if (brightness > BRIGHTNESS_SUNNY_LIMIT) {
                 commandsToSend.msg2ToSend = SUNNY;
             } else if (brightness < BRIGHTNESS_DARK_LIMIT) {
                 commandsToSend.msg2ToSend = DARK;
+            }
+
+            if (currentMsg1 != commandsToSend.msg1ToSend || currentMsg2 != commandsToSend.msg2ToSend) {
+                commandsToSend.customMsgSent = false;
             }
 
             I2C_close(i2c);
