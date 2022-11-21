@@ -11,7 +11,8 @@
 void musicTimerFxn(UArg arg0);
 void initBackgroundMusic(void);
 
-
+void stopMusic();
+void startMusic();
 
 
 #endif /* HEADERS_MUSICPLAYER_H_ */

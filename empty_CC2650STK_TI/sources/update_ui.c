@@ -29,7 +29,6 @@
 static char taskStack[STACKSIZE];
 PIN_Handle hBuzzer;
 
-static Clock_Handle clkHandle;
 
 void initUpdateUITask(void) {
     // Init LEDs
@@ -75,7 +74,7 @@ void updateUIFxn(UArg arg0, UArg arg1) {
 
 void doBuzzerTask(bool commandRecognized) {
     if (commandRecognized) {
-        Clock_stop(clkHandle); // Interrupt bg music
+        stopMusic(); // Interrupt bg music
         closeBuzzer();
         // Play cmd jingle
         noteInfo currentMelody[] = {{NOTE_E3, 400}, {NOTE_E4, 400}};
@@ -83,12 +82,12 @@ void doBuzzerTask(bool commandRecognized) {
         openBuzzer(hBuzzer);
         playMelody(currentMelody, melodySize);
         closeBuzzer();
-        Clock_start(clkHandle);
+        startMusic();
 
     }
     static bool musicStopped = false;
     if (tState == CRITICAL) {
-        Clock_stop(clkHandle); // Interrupt bg music
+        stopMusic(); // Interrupt bg music
         musicStopped = true;
         closeBuzzer();
         noteInfo currentMelody[] = {{NOTE_G3, 400}, {NOTE_C4, 400}};
@@ -97,7 +96,7 @@ void doBuzzerTask(bool commandRecognized) {
         playMelody(currentMelody, melodySize);
         closeBuzzer();
     } else if (tState == OK && musicStopped) {
-        Clock_start(clkHandle);
+        startMusic();
         musicStopped = false;
     }
 }

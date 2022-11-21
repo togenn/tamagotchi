@@ -88,9 +88,9 @@ void musicTimerFxn(UArg arg0) {
     uint16_t note = bgMusic[noteCounter].note;
     uint32_t noteLength = bgMusic[noteCounter].duration;
 
-    Clock_stop(clkHandle);
+    stopMusic();
     Clock_setTimeout(clkHandle, (noteLength * 1000) / Clock_tickPeriod);// Set clock for note length
-    Clock_start(clkHandle);
+    startMusic();
 
     buzzerSetFrequency(note);
     noteCounter++;
@@ -98,5 +98,13 @@ void musicTimerFxn(UArg arg0) {
         closeBuzzer();
         noteCounter = 0;
     }
+}
+
+void startMusic() {
+    Clock_start(clkHandle);
+}
+
+void stopMusic() {
+    Clock_stop(clkHandle);
 }
 
