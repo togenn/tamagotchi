@@ -16,55 +16,9 @@
 #include "notePitches.h"
 #include "commands.h"
 #include "buzzer.h"
+#include "musicPlayer.h"
 
-//note lenghts in ms
-#define BPM 110.0
-#define QUARTER_NOTE 1.0 / (BPM / 60.0) * 1000
-#define EIGHT_NOTE QUARTER_NOTE / 2
-#define SIXTEENTH_NOTE EIGHT_NOTE / 2
 
-// Buzzer configuration
-static PIN_Handle hBuzzer;
-static PIN_State sBuzzer;
-PIN_Config cBuzzer[] = {
-  Board_BUZZER | PIN_GPIO_OUTPUT_EN | PIN_GPIO_LOW | PIN_PUSHPULL | PIN_DRVSTR_MAX,
-  PIN_TERMINATE
-};
-// Background music
-//notes for the song: https://github.com/robsoncouto/arduino-songs/blob/master/doom/doom.ino
-const static noteInfo bgMusic[] = {{NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_D3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
-                      {NOTE_C3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_AS2, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_B2, SIXTEENTH_NOTE}, {NOTE_C3, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_D3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
-                      {NOTE_C3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_AS2, QUARTER_NOTE},
-                      {NOTE_NULL, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_D3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
-                      {NOTE_C3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_AS2, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_B2, SIXTEENTH_NOTE}, {NOTE_C3, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
-                      {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_D3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE},
-                      {NOTE_C3, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENTH_NOTE}, {NOTE_AS2, QUARTER_NOTE},
-                      {NOTE_NULL, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_G3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
-                      {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_F3, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_G3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
-                      {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, QUARTER_NOTE},
-                      {NOTE_NULL, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_G3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
-                      {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_E3, SIXTEENTH_NOTE}, {NOTE_F3, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
-                      {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_G3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE},
-                      {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, QUARTER_NOTE},
-                      {NOTE_NULL, SIXTEENTH_NOTE},
-};
 
 // green led = led1Handle, led1State
 #define greenLedHandle led1Handle
@@ -73,6 +27,7 @@ const static noteInfo bgMusic[] = {{NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENT
 
 #define STACKSIZE 1024
 static char taskStack[STACKSIZE];
+PIN_Handle hBuzzer;
 
 static Clock_Handle clkHandle;
 
@@ -83,9 +38,10 @@ void initUpdateUITask(void) {
     Task_Handle task;
     Task_Params taskParams;
     // Buzzer
-    hBuzzer = PIN_open(&sBuzzer, cBuzzer);
+    initBuzzerHandle();
+    hBuzzer = getBuzzerHandle();
     if (hBuzzer == NULL) {
-        System_abort("Pin open failed!");
+        System_abort("Pin open failed! ui");
     }
 
     Task_Params_init(&taskParams);
@@ -97,38 +53,11 @@ void initUpdateUITask(void) {
        System_abort("Update UI Task creation failed!");
     }
 
-    Clock_Params clkParams;
+    initBackgroundMusic();
 
-    Clock_Params_init(&clkParams);
-    uint32_t period = 10000 / Clock_tickPeriod;
-    clkParams.period = period;
-    clkParams.startFlag = TRUE;
-
-    clkHandle = Clock_create((Clock_FuncPtr) musicTimerFxn, period, &clkParams, NULL);
-    if (clkHandle == NULL) {
-       System_abort("Clock create failed");
-    }
 
 }
 
-void musicTimerFxn(UArg arg0) {
-    static int noteCounter = 0;
-    static size_t melodySize = sizeof(bgMusic) / sizeof(bgMusic[0]);
-    openBuzzer(hBuzzer);
-    uint16_t note = bgMusic[noteCounter].note;
-    uint32_t noteLength = bgMusic[noteCounter].duration;
-
-    Clock_stop(clkHandle);
-    Clock_setTimeout(clkHandle, (noteLength * 1000) / Clock_tickPeriod);// Set clock for note length
-    Clock_start(clkHandle);
-
-    buzzerSetFrequency(note);
-    noteCounter++;
-    if (noteCounter == melodySize) {
-        closeBuzzer();
-        noteCounter = 0;
-    }
-}
 
 
 void updateUIFxn(UArg arg0, UArg arg1) {
