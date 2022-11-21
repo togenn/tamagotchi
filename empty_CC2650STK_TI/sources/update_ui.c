@@ -86,7 +86,7 @@ void doBuzzerTask(bool commandRecognized) {
 
     }
     static bool musicStopped = false;
-    if (tState == CRITICAL) {
+    if (0/*tState == CRITICAL*/) {
         stopMusic(); // Interrupt bg music
         musicStopped = true;
         closeBuzzer();

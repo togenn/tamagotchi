@@ -19,8 +19,10 @@
 typedef enum {
     EMPTY_MSG = 0,
     SUNNY,
+    GOOD_LIGHT,
     DARK,
     HOT,
+    WARM,
     COLD
 } customMsg;
 
@@ -40,7 +42,7 @@ static inline const char* getCommandAsStr(command cmd) {
 }
 
 static inline const char* getCustomMsgAsStr(customMsg msg) {
-    static const char* msgStrings[] = {"", "SUNNY", "DARK", "HOT", "COLD"};
+    static const char* msgStrings[] = {"", "SUNNY", "GOOD LIGHT", "DARK", "HOT", "WARM", "COLD"};
 
     return msgStrings[msg];
 }

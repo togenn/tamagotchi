@@ -25,7 +25,7 @@ static char taskStack[STACKSIZE];
 #define TMP_COLD_LIMIT 20
 
 #define BRIGHTNESS_SUNNY_LIMIT 300
-#define BRIGHTNESS_DARK_LIMIT 50
+#define BRIGHTNESS_DARK_LIMIT 30
 
 void initAmbientDataTask(void) {
     Task_Params taskParams;
@@ -66,15 +66,21 @@ void ambientDataTaskFxn(UArg arg1, UArg arg2) {
                 commandsToSend.msg1ToSend = HOT;
             } else if (tmp < TMP_COLD_LIMIT) {
                 commandsToSend.msg1ToSend = COLD;
+            } else {
+                commandsToSend.msg1ToSend = WARM;
             }
 
 
             customMsg currentMsg2 = commandsToSend.msg2ToSend;
             double brightness = opt3001_get_data(&i2c);
-            if (brightness > BRIGHTNESS_SUNNY_LIMIT) {
+            if (brightness == -1.0) {
+                //data was not ready
+            } else if (brightness > BRIGHTNESS_SUNNY_LIMIT) {
                 commandsToSend.msg2ToSend = SUNNY;
             } else if (brightness < BRIGHTNESS_DARK_LIMIT) {
                 commandsToSend.msg2ToSend = DARK;
+            } else {
+                commandsToSend.msg2ToSend = GOOD_LIGHT;
             }
 
             if (currentMsg1 != commandsToSend.msg1ToSend || currentMsg2 != commandsToSend.msg2ToSend) {

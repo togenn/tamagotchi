@@ -45,9 +45,9 @@ Void accelDataTimerFxn(UArg arg0) {
 static void initProgram() {
 
     initAccelSensorTask();
-    initCommunicationTask();
+    //initCommunicationTask();
     initUpdateUITask();
-    //initUARTCommTask();
+    initUARTCommTask();
     initAmbientDataTask();
 
    Clock_Handle clkHandle;

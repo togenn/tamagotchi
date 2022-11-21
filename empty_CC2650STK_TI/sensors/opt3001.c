@@ -70,10 +70,6 @@ uint16_t opt3001_get_status(I2C_Handle *i2c) {
 
 double opt3001_get_data(I2C_Handle *i2c) {
 
-    // JTKJ: Tehtävä 2. Muokkaa funktiota niin että se palauttaa mittausarvon lukseina
-    // JTKJ: Exercise 2. Complete this function to return the measured value as lux
-
-
 	double lux = -1.0;
     uint8_t txBuffer[1];
     uint8_t rxBuffer[2];
@@ -104,8 +100,10 @@ double opt3001_get_data(I2C_Handle *i2c) {
 		}
 
 	} else {
+	    /*
 		System_printf("OPT3001: Data not ready!\n");
 		System_flush();
+		*/
 	}
 
 	return lux;

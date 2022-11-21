@@ -79,7 +79,9 @@ void UARTCommTaskFxn(UArg arg0, UArg arg1) {
 
         if (programState == COMMUNICATION) {
             sendCommandsUART(&handle);
-            memset(&commandsToSend, 0, sizeof(commandsToSend));
+            commandsToSend.eatAmount = 0;
+            commandsToSend.exerciseAmount = 0;
+            commandsToSend.petAmount = 0;
             programState = WAITING;
         }
     }
