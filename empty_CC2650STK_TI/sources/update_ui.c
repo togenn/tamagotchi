@@ -58,7 +58,6 @@ void initUpdateUITask(void) {
 }
 
 
-
 void updateUIFxn(UArg arg0, UArg arg1) {
     while (1) {
         if (programState == UPDATE_UI) {
@@ -86,7 +85,7 @@ void doBuzzerTask(bool commandRecognized) {
 
     }
     static bool musicStopped = false;
-    if (0/*tState == CRITICAL*/) {
+    if (tState == CRITICAL*) {
         stopMusic(); // Interrupt bg music
         musicStopped = true;
         closeBuzzer();
