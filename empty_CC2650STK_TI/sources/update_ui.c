@@ -31,13 +31,13 @@ PIN_Handle hBuzzer;
 
 
 void initUpdateUITask(void) {
-    // Init LEDs
-    initLeds();
 
     Task_Handle task;
     Task_Params taskParams;
-    // Buzzer
-    initBuzzerHandle();
+
+    initLeds();
+
+    initBuzzer();
     hBuzzer = getBuzzerHandle();
     if (hBuzzer == NULL) {
         System_abort("Pin open failed! ui");
@@ -85,7 +85,7 @@ void doBuzzerTask(bool commandRecognized) {
 
     }
     static bool musicStopped = false;
-    if (tState == CRITICAL*) {
+    if (tState == CRITICAL) {
         stopMusic(); // Interrupt bg music
         musicStopped = true;
         closeBuzzer();

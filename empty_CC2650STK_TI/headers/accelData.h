@@ -18,6 +18,7 @@ struct data_point {
 
 void initAccelSensorTask(void);
 
+//private
 void accelSensorTaskFxn(UArg arg0, UArg arg1);
 void recogniseCommand(struct data_point* data);
 void initAccelSensor(I2C_Handle* i2c, I2C_Params* i2cParams);

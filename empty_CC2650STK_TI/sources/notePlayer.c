@@ -21,7 +21,7 @@ PIN_Config cBuzzer[] = {
   PIN_TERMINATE
 };
 
-void initBuzzerHandle() {
+void initBuzzer() {
     hBuzzer = PIN_open(&sBuzzer, cBuzzer);
 }
 

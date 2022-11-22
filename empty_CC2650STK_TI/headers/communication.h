@@ -19,6 +19,7 @@ void appendFormattedCommand(char* payload, command commandToSend, uint8_t amount
 void appendFormattedMessage(char* payload, customMsg msgToSend, uint8_t msgNum);
 void handleReceivedMessage(char* receivedPayload);
 
+//private
 void communicationTaskFxn(UArg arg0, UArg arg1);
 void sendCommands();
 

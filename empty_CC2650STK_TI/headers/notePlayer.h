@@ -14,12 +14,12 @@ typedef struct {
 } noteInfo;
 
 PIN_Handle getBuzzerHandle();
-void initBuzzerTask();
-void initBuzzerHandle();
-
-void playNote(uint16_t frequency, uint32_t duration);
-void playMelody(noteInfo* melody, size_t melodyLength);
 void initBuzzer();
+void playMelody(noteInfo* melody, size_t melodyLength);
 void closeBuzzer();
 void openBuzzer(PIN_Handle);
+
+//private
+void playNote(uint16_t frequency, uint32_t duration);
+
 #endif /* HEADERS_NOTEPLAYER_H_ */

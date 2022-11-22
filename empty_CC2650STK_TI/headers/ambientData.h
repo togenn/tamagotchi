@@ -11,6 +11,8 @@
 #include <xdc/std.h>
 
 void initAmbientDataTask(void);
+
+//private
 void ambientDataTaskFxn(UArg arg1, UArg arg2);
 
 #endif /* HEADERS_AMBIENTDATA_H_ */

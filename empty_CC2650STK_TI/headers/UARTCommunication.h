@@ -15,6 +15,8 @@
 
 void initUARTCommTask(void);
 
+
+//private
 void initUART(UART_Handle* handle);
 void UARTCommTaskFxn(UArg arg0, UArg arg1);
 void sendCommandsUART(UART_Handle* handle);
