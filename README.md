@@ -1,3 +1,3 @@
 # tamagotchi
 
-älä Käytä master branchia mainin sijaan
+Tamagotchi made with TI Sensortag which communicates with backend with UART or wireless communication.
