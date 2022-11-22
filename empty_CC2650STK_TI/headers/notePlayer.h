@@ -15,7 +15,7 @@ typedef struct {
 
 PIN_Handle getBuzzerHandle();
 void initBuzzer();
-void playMelody(noteInfo* melody, size_t melodyLength);
+void playMelody(noteInfo* melody, size_t melodyLength); //for beeps that don't have strict timing requirements
 void closeBuzzer();
 void openBuzzer(PIN_Handle);
 

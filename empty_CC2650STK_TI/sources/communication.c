@@ -18,6 +18,7 @@
 
 #define MAX_LEN 80
 #define OWN_ID 2019
+#define GATEWAY_ADDRESS 0x1234
 
 #define STACKSIZE 2048
 static char taskStack[STACKSIZE];
@@ -69,7 +70,7 @@ void sendCommands() {
 
     formatPayload(payload);
     if (payload[0] != '0') {
-        Send6LoWPAN(0x1234, (uint8_t*) payload, strlen(payload));
+        Send6LoWPAN(GATEWAY_ADDRESS, (uint8_t*) payload, strlen(payload));
     }
 }
 

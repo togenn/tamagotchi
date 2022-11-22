@@ -14,9 +14,6 @@
 #include "buzzer.h"
 #include "musicPlayer.h"
 
-
-
-
 //note lenghts in ms
 #define BPM 110.0
 #define QUARTER_NOTE 1.0 / (BPM / 60.0) * 1000
@@ -58,8 +55,10 @@ const static noteInfo bgMusic[] = {{NOTE_E2, SIXTEENTH_NOTE}, {NOTE_E2, SIXTEENT
                       {NOTE_F3, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_A2, SIXTEENTH_NOTE}, {NOTE_DS3, QUARTER_NOTE},
                       {NOTE_NULL, SIXTEENTH_NOTE},
 };
+
 static Clock_Handle clkHandle;
 PIN_Handle hBuzzer;
+
 void initBackgroundMusic() {
 
 

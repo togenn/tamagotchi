@@ -32,6 +32,8 @@
 #include "update_ui.h"
 #include "ambientData.h"
 
+#define WIRELESS_COMMUNICATION 0
+
 state programState = WAITING;
 tamagotchiState tState = OK;
 
@@ -45,10 +47,15 @@ Void accelDataTimerFxn(UArg arg0) {
 static void initProgram() {
 
     initAccelSensorTask();
-    //initCommunicationTask();
     initUpdateUITask();
-    initUARTCommTask();
     initAmbientDataTask();
+
+#if WIRELESS_COMMUNICATION
+    initCommunicationTask();
+#else
+    initUARTCommTask();
+#endif
+
 
    Clock_Handle clkHandle;
    Clock_Params clkParams;

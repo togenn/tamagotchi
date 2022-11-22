@@ -90,12 +90,6 @@ void accelSensorTaskFxn(UArg arg0, UArg arg1) {
             I2C_close(i2c);
 
             data_values[dataCollected] = data;
-            /*
-            char str[64];
-            sprintf(str, "%.2f,%.2f,%.2f\n", data.ax, data.ay, data.az);
-            System_printf(str);
-            */
-
 
             if (++dataCollected == DATA_POINTS) {
                 recogniseCommand(data_values);
@@ -118,15 +112,6 @@ void recogniseCommand(struct data_point* data) {
         xyzAccArr[2][i] = (fabs(data[i].az)-1);
     }
 
-   // Gathering samples from each axis of the gyroscope,
-   // and taking the absolute values from each sample
-   float xyzGyroArr[3][DATA_POINTS];
-   for (int j = 0; j < (DATA_POINTS + 1); ++j) {
-       xyzGyroArr[0][j] = abs(data[j].rx);
-       xyzGyroArr[1][j] = abs(data[j].ry);
-       xyzGyroArr[2][j] = abs(data[j].rz);
-   }
-
    // Sweeping through the 5 data points, three at a time
    for (int k = 0; k < COMM_AMOUNT; ++k) {
 
@@ -138,32 +123,14 @@ void recogniseCommand(struct data_point* data) {
             }
         }
 
-        // Limit for gyro rotation
-        float const gyroL = 90;
-
-        // Array for each gyro axis, to check if there was rotation over the previous limit
-        int rotArr[3];
-
-        // Checking the rotations
-        for (int rG = 0; rG < 3; ++rG) {
-            for (int cG = k; cG < (COMM_AMOUNT + k); ++cG) {
-                if (xyzGyroArr[rG][cG] > gyroL) {
-                    rotArr[rG] = 1;
-                    break;
-                } else {
-                    rotArr[rG] = 1;
-                }
-            }
-        }
-
         // Conditions for the commands
-        if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1 && rotArr[1] && rotArr[2]) {
+        if (abs(rowsum[0]) > 1 && rowsum[1] < 1 && rowsum[2] < 1) {
             commandsToSend.petAmount++;
             tState = OK;
-        } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1 && rotArr[0] && rotArr[2]) {
+        } else if (abs(rowsum[1]) > 1 && rowsum[2] < 1 && rowsum[0] < 1) {
             commandsToSend.exerciseAmount++;
             tState = OK;
-        } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1 && rotArr[0] && rotArr[1]) {
+        } else if (rowsum[2] > 1 && rowsum[0] < 1 && rowsum[1] < 1) {
             commandsToSend.eatAmount++;
             tState = OK;
         }
